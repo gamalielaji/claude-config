@@ -1,0 +1,33 @@
+# Ignore everything by default
+*
+
+# Allow only .claude/ Game Studios configuration
+!.gitignore
+!.claude/
+!.claude/agents/
+!.claude/agents/**
+!.claude/skills/
+!.claude/skills/**
+!.claude/rules/
+!.claude/rules/**
+!.claude/hooks/
+!.claude/hooks/**
+!.claude/docs/
+!.claude/docs/**
+!.claude/settings.json
+!.claude/statusline.sh
+
+# Still exclude sensitive claude files
+.claude/memory/
+.claude/projects/
+.claude/session-env/
+.claude/telemetry/
+.claude/backups/
+.claude/shell-snapshots/
+.claude/debug/
+.claude/ide/
+.claude/plans/
+.claude/plugins/
+.claude/scheduled-tasks/
+.claude/synthesis-outputs/
+.claude/*.json.backup

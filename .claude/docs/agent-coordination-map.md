@@ -1,5 +1,9 @@
 # Agent Coordination and Delegation Map
 
+> All agents follow the **Karpathy Method** (Context Engineering + Auto-Research +
+> Self-Evaluation). See `.claude/docs/karpathy-method.md` for the full protocol.
+> See `.claude/docs/coordination-rules.md` for the coordination-specific application.
+
 ## Organizational Hierarchy
 
 ```

@@ -3,6 +3,22 @@ name: skill-trainer
 description: "Karpathy-method skill trainer with auto-research. Trains new Claude Code skills from scratch using first-principles decomposition, auto-research, progressive complexity, and loss-function evaluation. Trigger on: 'train skill', 'build skill', 'create skill', 'skill trainer', 'train agent', 'bikin skill', 'latih skill', 'upgrade skill', 'improve skill', 'retrain', 'skill from scratch', 'new skill for', 'I need a skill that', 'teach claude to'. Do NOT trigger on: general coding, file editing, or tasks that don't involve skill creation."
 ---
 
+## Context Engineering (Karpathy Method)
+
+Before execution, this skill automatically:
+
+1. **Load** — Read all files referenced by the user or implied by the task
+2. **Research** — If the task involves unfamiliar patterns or decisions, use WebSearch for current best practices (2-3 targeted queries, time-boxed to <20% of task)
+3. **Scope** — Define exactly what this skill will produce and what it will NOT touch
+4. **Constraints** — Identify boundaries before starting (format, quality bar, domain limits)
+
+After execution, verify:
+- [ ] Primary deliverable produced and matches requested format
+- [ ] All user requirements addressed, no unresolved assumptions
+- [ ] No scope creep beyond the task
+- [ ] Recommendations are evidence-based (code, docs, or research)
+
+
 # Skill Trainer Agent — Karpathy Method
 
 ## PRIME DIRECTIVE
@@ -259,3 +275,15 @@ At the end of training, the user receives:
 5. **Next steps** if score < 25 (what to improve next)
 
 The skill is immediately available via `/skill-name` in Claude Code.
+
+---
+
+## Self-Evaluation Checklist
+
+Before presenting final output:
+
+1. Re-read output against the original request
+2. Verify all success criteria are met
+3. Check that output matches expected format/template
+4. Ensure no scope creep or unrequested additions
+5. Confirm recommendations are backed by evidence

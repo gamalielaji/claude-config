@@ -6,6 +6,22 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, AskUserQuestion
 ---
 
+## Context Engineering (Karpathy Method)
+
+Before execution, this skill automatically:
+
+1. **Load** — Read all files referenced by the user or implied by the task
+2. **Research** — If the task involves unfamiliar patterns or decisions, use WebSearch for current best practices (2-3 targeted queries, time-boxed to <20% of task)
+3. **Scope** — Define exactly what this skill will produce and what it will NOT touch
+4. **Constraints** — Identify boundaries before starting (format, quality bar, domain limits)
+
+After execution, verify:
+- [ ] Primary deliverable produced and matches requested format
+- [ ] All user requirements addressed, no unresolved assumptions
+- [ ] No scope creep beyond the task
+- [ ] Recommendations are evidence-based (code, docs, or research)
+
+
 # Guided Onboarding
 
 This skill is the entry point for new users. It does NOT assume you have a game
@@ -178,3 +194,15 @@ This skill follows the collaborative design principle:
 3. **User decides** — they pick the direction
 4. **No auto-execution** — recommend the next skill, don't run it without asking
 5. **Adapt** — if the user's situation doesn't fit a template, listen and adjust
+
+---
+
+## Self-Evaluation Checklist
+
+Before presenting final output:
+
+1. Re-read output against the original request
+2. Verify all success criteria are met
+3. Check that output matches expected format/template
+4. Ensure no scope creep or unrequested additions
+5. Confirm recommendations are backed by evidence

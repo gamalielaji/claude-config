@@ -1,5 +1,8 @@
 # Available Skills (Slash Commands)
 
+> All skills follow the **Karpathy Method** for context-optimized execution:
+> Research → Constrain → Execute → Evaluate. See `.claude/docs/karpathy-method.md`.
+
 | Command | Purpose |
 |---------|---------|
 | `/start` | First-time onboarding — asks where you are, then guides you to the right workflow |

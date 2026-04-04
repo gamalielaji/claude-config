@@ -3,6 +3,21 @@ name: indonesian-law
 description: Research Indonesian law using Pasal.id API (40k+ regulations, 936k+ articles). Search, retrieve, and cite specific pasal from UU, PP, PERPRES, PERMEN, and all 22 regulation types. Use when any legal question about Indonesian law arises — corporate law, IP/trademark, employment, data protection, ITE, or any regulatory topic. Trigger on hukum Indonesia, undang-undang, peraturan, pasal, UU, PP, PERPRES, regulasi, legal compliance Indonesia, izin usaha, perizinan, hak cipta, merek dagang, ketenagakerjaan, perlindungan data, ITE, cipta kerja, perseroan terbatas, RUPS, akta, notaris, pajak, investasi asing, PMA, BKPM, OSS. Also trigger on any Indonesian legal question in Bahasa or English.
 ---
 
+## Context Engineering (Karpathy Method)
+
+Before execution, this skill automatically:
+
+1. **Load** — Read all files referenced by the user or implied by the task
+2. **Research** — If the task involves unfamiliar patterns or decisions, use WebSearch for current best practices (2-3 targeted queries, time-boxed to <20% of task)
+3. **Scope** — Define exactly what this skill will produce and what it will NOT touch
+4. **Constraints** — Identify boundaries before starting (format, quality bar, domain limits)
+
+After execution, verify:
+- [ ] Primary deliverable produced and matches requested format
+- [ ] All user requirements addressed, no unresolved assumptions
+- [ ] No scope creep beyond the task
+- [ ] Recommendations are evidence-based (code, docs, or research)
+
 # Indonesian Law Research via Pasal.id
 
 Research Indonesian law with structured citations using Pasal.id — an open-source database of 40,144 regulations and 936,853 structured articles covering 1945 to 2026.
@@ -254,3 +269,15 @@ UUD 1945 (Constitution)
 ```
 
 Higher-level regulations override lower-level ones. When in conflict, UU beats PP beats PERPRES beats PERMEN. Constitutional review by MK (Mahkamah Konstitusi) can invalidate UU provisions.
+
+---
+
+## Self-Evaluation Checklist
+
+Before presenting final output:
+
+1. Re-read output against the original request
+2. Verify all success criteria are met
+3. Check that output matches expected format/template
+4. Ensure no scope creep or unrequested additions
+5. Confirm recommendations are backed by evidence

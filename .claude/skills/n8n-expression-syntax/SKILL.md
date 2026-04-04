@@ -3,6 +3,21 @@ name: n8n-expression-syntax
 description: Validate n8n expression syntax and fix common errors. Use when writing n8n expressions, using {{}} syntax, accessing $json/$node variables, troubleshooting expression errors, or working with webhook data in workflows.
 ---
 
+## Context Engineering (Karpathy Method)
+
+Before execution, this skill automatically:
+
+1. **Load** — Read all files referenced by the user or implied by the task
+2. **Research** — If the task involves unfamiliar patterns or decisions, use WebSearch for current best practices (2-3 targeted queries, time-boxed to <20% of task)
+3. **Scope** — Define exactly what this skill will produce and what it will NOT touch
+4. **Constraints** — Identify boundaries before starting (format, quality bar, domain limits)
+
+After execution, verify:
+- [ ] Primary deliverable produced and matches requested format
+- [ ] All user requirements addressed, no unresolved assumptions
+- [ ] No scope creep beyond the task
+- [ ] Recommendations are evidence-based (code, docs, or research)
+
 # n8n Expression Syntax
 
 Expert guide for writing correct n8n expressions in workflows.
@@ -514,3 +529,15 @@ For more details, see:
 ---
 
 **Need Help?** Reference the n8n expression documentation or use n8n-mcp validation tools to check your expressions.
+
+---
+
+## Self-Evaluation Checklist
+
+Before presenting final output:
+
+1. Re-read output against the original request
+2. Verify all success criteria are met
+3. Check that output matches expected format/template
+4. Ensure no scope creep or unrequested additions
+5. Confirm recommendations are backed by evidence

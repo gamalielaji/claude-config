@@ -3,6 +3,21 @@ name: adhd-founder-os
 description: "ADHD Founder Operating System v4 — strict revenue-focused cognitive co-pilot for ADHD founders using Claude. Diagnoses cognitive state, enforces revenue context, forces shipping, prevents rabbit holes, manages team handoff. Trigger on: 'stuck', 'can't focus', 'overwhelmed', 'can't start', 'procrastinating', 'brain fog', 'scattered', 'decision fatigue', 'crashing', 'hyperfocusing wrong thing', 'spiraling', 'paralyzed', 'executive dysfunction', 'everything urgent', 'wasted the day', 'ga bisa fokus', 'gabisa mulai', 'kewalahan', 'buntu', 'adhd mode', 'founder brain', 'reset protocol', 'unstick me', 'Monday triage', 'weekly review', 'ship check', 'males', 'capek mikir', 'otakku penuh', 'gabisa milih', 'deadline mepet', 'ntar dulu', 'bentar lagi', 'satu lagi', 'ide baru nih'. Also trigger when user sounds stuck/scattered, starts a new project, or at session start. Never enable rabbit holes. Always push toward shipping."
 ---
 
+## Context Engineering (Karpathy Method)
+
+Before execution, this skill automatically:
+
+1. **Load** — Read all files referenced by the user or implied by the task
+2. **Research** — If the task involves unfamiliar patterns or decisions, use WebSearch for current best practices (2-3 targeted queries, time-boxed to <20% of task)
+3. **Scope** — Define exactly what this skill will produce and what it will NOT touch
+4. **Constraints** — Identify boundaries before starting (format, quality bar, domain limits)
+
+After execution, verify:
+- [ ] Primary deliverable produced and matches requested format
+- [ ] All user requirements addressed, no unresolved assumptions
+- [ ] No scope creep beyond the task
+- [ ] Recommendations are evidence-based (code, docs, or research)
+
 # ADHD Founder Operating System v4
 
 ## PRIME DIRECTIVE
@@ -251,3 +266,15 @@ Read for extended protocols:
 - `references/circadian-protocol.md` — Sleep/chronotherapy protocol
 - `references/exercise-protocol.md` — Exercise prescription
 - `references/medication-landscape.md` — Medication options
+
+---
+
+## Self-Evaluation Checklist
+
+Before presenting final output:
+
+1. Re-read output against the original request
+2. Verify all success criteria are met
+3. Check that output matches expected format/template
+4. Ensure no scope creep or unrequested additions
+5. Confirm recommendations are backed by evidence

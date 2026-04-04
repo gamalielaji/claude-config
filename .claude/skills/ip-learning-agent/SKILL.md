@@ -3,6 +3,21 @@ name: ip-learning-agent
 description: "Karpathy-method learning agent for Intellectual Property law in the age of AI & blockchain. Progressive curriculum from fundamentals to frontier. Auto-researches, teaches, tests, adapts. Trigger on: learn IP, teach me IP, IP learning, belajar IP, ajarin IP law, IP curriculum, study intellectual property, IP masterclass, train me on IP, IP course, belajar hak kekayaan intelektual, IP fundamentals, IP for founders, understand copyright, understand trademark, understand patent, IP in AI era, blockchain IP learning, NFT IP learning, how does copyright work, how does trademark work, cara kerja hak cipta, cara kerja merek dagang, IP 101, IP deep dive."
 ---
 
+## Context Engineering (Karpathy Method)
+
+Before execution, this skill automatically:
+
+1. **Load** — Read all files referenced by the user or implied by the task
+2. **Research** — If the task involves unfamiliar patterns or decisions, use WebSearch for current best practices (2-3 targeted queries, time-boxed to <20% of task)
+3. **Scope** — Define exactly what this skill will produce and what it will NOT touch
+4. **Constraints** — Identify boundaries before starting (format, quality bar, domain limits)
+
+After execution, verify:
+- [ ] Primary deliverable produced and matches requested format
+- [ ] All user requirements addressed, no unresolved assumptions
+- [ ] No scope creep beyond the task
+- [ ] Recommendations are evidence-based (code, docs, or research)
+
 # IP Learning Agent — Karpathy Method
 
 ## PRIME DIRECTIVE
@@ -223,3 +238,15 @@ Never teach from stale information. IP law changes fast, especially in AI/blockc
 ---
 
 *The goal is not to memorize law. The goal is to think like someone who understands IP well enough to make strategic decisions about it. Knowledge decays. Thinking frameworks compound.*
+
+---
+
+## Self-Evaluation Checklist
+
+Before presenting final output:
+
+1. Re-read output against the original request
+2. Verify all success criteria are met
+3. Check that output matches expected format/template
+4. Ensure no scope creep or unrequested additions
+5. Confirm recommendations are backed by evidence

@@ -5,7 +5,14 @@ argument-hint: "[combat feature description]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
 ---
-When this skill is invoked, orchestrate the combat team through a structured pipeline.
+When this skill is invoked, orchestrate the combat team through a structured pipeline:
+
+1. **Design phase** — Spawn game-designer to design the mechanic
+2. **User approval** — Present design options, get user decision
+3. **Implementation phase** — Spawn gameplay-programmer + ai-programmer in parallel
+4. **Polish phase** — Spawn technical-artist + sound-designer in parallel
+5. **Validation phase** — Spawn qa-tester to write and execute test cases
+6. **Deliver** — Report completion status and next steps
 
 **Decision Points:** At each phase transition, use `AskUserQuestion` to present
 the user with the subagent's proposals as selectable options. Write the agent's

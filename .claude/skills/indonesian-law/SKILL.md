@@ -1,6 +1,8 @@
 ---
 name: indonesian-law
 description: Research Indonesian law using Pasal.id API (40k+ regulations, 936k+ articles). Search, retrieve, and cite specific pasal from UU, PP, PERPRES, PERMEN, and all 22 regulation types. Use when any legal question about Indonesian law arises — corporate law, IP/trademark, employment, data protection, ITE, or any regulatory topic. Trigger on hukum Indonesia, undang-undang, peraturan, pasal, UU, PP, PERPRES, regulasi, legal compliance Indonesia, izin usaha, perizinan, hak cipta, merek dagang, ketenagakerjaan, perlindungan data, ITE, cipta kerja, perseroan terbatas, RUPS, akta, notaris, pajak, investasi asing, PMA, BKPM, OSS. Also trigger on any Indonesian legal question in Bahasa or English.
+user-invocable: true
+allowed-tools: Read, Glob, Grep, WebSearch, Bash
 ---
 
 # Indonesian Law Research via Pasal.id

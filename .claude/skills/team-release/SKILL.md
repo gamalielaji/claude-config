@@ -7,6 +7,13 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoW
 ---
 When this skill is invoked, orchestrate the release team through a structured pipeline.
 
+1. **Readiness check** — Audit build status, blockers, and quality gates
+2. **User approval** — Present release readiness report, get go/no-go
+3. **Build phase** — Spawn devops-engineer for build pipeline
+4. **QA phase** — Spawn qa-lead for release testing
+5. **Submission phase** — Spawn release-manager for store submission
+6. **Deliver** — Report release status and post-launch checklist
+
 **Decision Points:** At each phase transition, use `AskUserQuestion` to present
 the user with the subagent's proposals as selectable options. Write the agent's
 full analysis in conversation, then capture the decision with concise labels.

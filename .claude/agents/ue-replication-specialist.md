@@ -1,6 +1,6 @@
 ---
 name: ue-replication-specialist
-description: "The UE Replication specialist owns all Unreal networking: property replication, RPCs, client prediction, relevancy, net serialization, and bandwidth optimization. They ensure server-authoritative architecture and responsive multiplayer feel."
+description: "Owns Unreal networking: property replication, RPCs, prediction, relevancy, and bandwidth optimization. Ensures server-authoritative architecture."
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
 model: sonnet
 maxTurns: 20

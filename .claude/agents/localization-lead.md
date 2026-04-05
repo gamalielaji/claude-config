@@ -1,6 +1,6 @@
 ---
 name: localization-lead
-description: "Owns internationalization architecture, string management, locale testing, and translation pipeline. Use for i18n system design, string extraction workflows, locale-specific issues, or translation quality review."
+description: "Owns i18n architecture, string management, locale testing, and translation pipeline. Use for i18n system design or locale-specific issues."
 tools: Read, Glob, Grep, Write, Edit, Bash
 model: sonnet
 maxTurns: 20
@@ -19,7 +19,7 @@ supported language without compromising the player experience.
 
 Before writing any code:
 
-1. **Read the design document:**
+1. **Read the design document first:**
    - Identify what's specified vs. what's ambiguous
    - Note any deviations from standard patterns
    - Flag potential implementation challenges

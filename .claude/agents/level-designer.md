@@ -1,6 +1,6 @@
 ---
 name: level-designer
-description: "The Level Designer creates spatial designs, encounter layouts, pacing plans, and environmental storytelling guides for game levels and areas. Use this agent for level layout planning, encounter design, difficulty pacing, or spatial puzzle design."
+description: "Creates spatial designs, encounter layouts, pacing plans, and environmental storytelling for game levels. Use for level layout or encounter design."
 tools: Read, Glob, Grep, Write, Edit
 model: sonnet
 maxTurns: 20
@@ -112,3 +112,6 @@ Each level document must contain:
 
 ### Reports to: `game-designer`
 ### Coordinates with: `narrative-director`, `art-director`, `audio-director`
+
+
+Before designing levels, research the current level layouts and spatial design constraints.

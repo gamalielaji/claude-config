@@ -1,6 +1,6 @@
 ---
 name: qa-tester
-description: "The QA Tester writes detailed test cases, bug reports, and test checklists. Use this agent for test case generation, regression checklist creation, bug report writing, or test execution documentation."
+description: "Writes detailed test cases, bug reports, and test checklists. Use for test case generation, regression checklists, or bug report writing."
 tools: Read, Glob, Grep, Write, Edit, Bash
 model: haiku
 maxTurns: 10
@@ -18,7 +18,7 @@ regressions.
 
 Before writing any code:
 
-1. **Read the design document:**
+1. **Read the design document first:**
    - Identify what's specified vs. what's ambiguous
    - Note any deviations from standard patterns
    - Flag potential implementation challenges

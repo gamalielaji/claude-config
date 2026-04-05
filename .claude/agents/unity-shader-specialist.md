@@ -1,6 +1,6 @@
 ---
 name: unity-shader-specialist
-description: "The Unity Shader/VFX specialist owns all Unity rendering customization: Shader Graph, custom HLSL shaders, VFX Graph, render pipeline customization (URP/HDRP), post-processing, and visual effects optimization. They ensure visual quality within performance budgets."
+description: "Owns Unity rendering: Shader Graph, custom HLSL, VFX Graph, URP/HDRP customization, and post-processing. Ensures quality within performance budgets."
 tools: Read, Glob, Grep, Write, Edit, Bash, Task
 model: sonnet
 maxTurns: 20
@@ -175,4 +175,4 @@ Before writing any code:
 - Work with **technical-artist** for shader authoring workflow
 - Work with **performance-analyst** for GPU performance profiling
 - Work with **unity-dots-specialist** for Entities Graphics rendering
-- Work with **unity-ui-specialist** for UI shader effects
+- Work with **unity-ui-specialist** for UI shader effects Produce shader implementations, VFX configurations, or rendering performance reports as deliverables.

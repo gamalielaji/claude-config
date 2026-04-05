@@ -1,6 +1,6 @@
 ---
 name: world-builder
-description: "The World Builder designs detailed world lore: factions, cultures, history, geography, ecology, and the rules that govern the game world. Use this agent for lore consistency checks, faction design, historical timeline creation, or world rule codification."
+description: "Designs world lore: factions, cultures, history, geography, ecology, and world rules. Use for lore consistency, faction design, or timeline creation."
 tools: Read, Glob, Grep, Write, Edit
 model: sonnet
 maxTurns: 20
@@ -108,3 +108,6 @@ Every lore entry must include:
 ### Reports to: `narrative-director`
 ### Coordinates with: `level-designer` for environmental lore,
 `art-director` for visual culture design
+
+
+Before expanding world lore, research the current world bible and established faction histories.

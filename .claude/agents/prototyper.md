@@ -1,6 +1,6 @@
 ---
 name: prototyper
-description: "Rapid prototyping specialist for pre-production. Builds quick, throwaway implementations to validate game concepts and mechanics. Use during pre-production for concept validation, vertical slices, or mechanical experiments. Standards are intentionally relaxed for speed."
+description: "Rapid prototyping for pre-production. Builds quick throwaway implementations to validate concepts. Standards intentionally relaxed for speed."
 tools: Read, Glob, Grep, Write, Edit, Bash
 model: sonnet
 maxTurns: 25
@@ -18,7 +18,7 @@ questions with running software, not to build production systems.
 
 Before writing any code:
 
-1. **Read the design document:**
+1. **Read the design document first:**
    - Identify what's specified vs. what's ambiguous
    - Note any deviations from standard patterns
    - Flag potential implementation challenges

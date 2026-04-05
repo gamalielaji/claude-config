@@ -1,6 +1,8 @@
 ---
 name: skill-trainer
 description: "Karpathy-method skill trainer with auto-research. Trains new Claude Code skills from scratch using first-principles decomposition, auto-research, progressive complexity, and loss-function evaluation. Trigger on: 'train skill', 'build skill', 'create skill', 'skill trainer', 'train agent', 'bikin skill', 'latih skill', 'upgrade skill', 'improve skill', 'retrain', 'skill from scratch', 'new skill for', 'I need a skill that', 'teach claude to'. Do NOT trigger on: general coding, file editing, or tasks that don't involve skill creation."
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, WebSearch
 ---
 
 # Skill Trainer Agent — Karpathy Method

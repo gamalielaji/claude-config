@@ -7,6 +7,13 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoW
 ---
 When this skill is invoked, orchestrate the polish team through a structured pipeline.
 
+1. **Audit phase** — Identify polish targets across visual, audio, and UX
+2. **User approval** — Present priority list, get user decision
+3. **Visual polish** — Spawn technical-artist for VFX and shader refinement
+4. **Audio polish** — Spawn sound-designer for audio improvements
+5. **UX polish** — Spawn ux-designer for interaction refinement
+6. **Deliver** — Report completion status
+
 **Decision Points:** At each phase transition, use `AskUserQuestion` to present
 the user with the subagent's proposals as selectable options. Write the agent's
 full analysis in conversation, then capture the decision with concise labels.

@@ -1,6 +1,8 @@
 ---
 name: ip-learning-agent
 description: "Karpathy-method learning agent for Intellectual Property law in the age of AI & blockchain. Progressive curriculum from fundamentals to frontier. Auto-researches, teaches, tests, adapts. Trigger on: learn IP, teach me IP, IP learning, belajar IP, ajarin IP law, IP curriculum, study intellectual property, IP masterclass, train me on IP, IP course, belajar hak kekayaan intelektual, IP fundamentals, IP for founders, understand copyright, understand trademark, understand patent, IP in AI era, blockchain IP learning, NFT IP learning, how does copyright work, how does trademark work, cara kerja hak cipta, cara kerja merek dagang, IP 101, IP deep dive."
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, WebSearch
 ---
 
 # IP Learning Agent — Karpathy Method

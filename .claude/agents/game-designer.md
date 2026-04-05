@@ -1,6 +1,6 @@
 ---
 name: game-designer
-description: "The Game Designer owns the mechanical and systems design of the game. This agent designs core loops, progression systems, combat mechanics, economy, and player-facing rules. Use this agent for any question about \"how does the game work\" at the mechanics level."
+description: "Owns mechanical and systems design: core loops, progression, combat, economy, and player-facing rules. Use for any question about how the game works mechanically."how does the game work\" at the mechanics level."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
 model: sonnet
 maxTurns: 20

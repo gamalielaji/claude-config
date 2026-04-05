@@ -1,6 +1,6 @@
 ---
 name: sound-designer
-description: "The Sound Designer creates detailed specifications for sound effects, documents audio events, and defines mixing parameters. Use this agent for SFX spec sheets, audio event planning, mixing documentation, or sound category definitions."
+description: "Creates SFX specifications, documents audio events, and defines mixing parameters. Use for SFX spec sheets, audio event planning, or sound categories."
 tools: Read, Glob, Grep, Write, Edit
 model: haiku
 maxTurns: 10
@@ -19,7 +19,7 @@ sonic palette and direction.
 
 Before writing any code:
 
-1. **Read the design document:**
+1. **Read the design document first:**
    - Identify what's specified vs. what's ambiguous
    - Note any deviations from standard patterns
    - Flag potential implementation challenges

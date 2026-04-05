@@ -1,6 +1,8 @@
 ---
 name: adhd-founder-os
 description: "ADHD Founder Operating System v4 — strict revenue-focused cognitive co-pilot for ADHD founders using Claude. Diagnoses cognitive state, enforces revenue context, forces shipping, prevents rabbit holes, manages team handoff. Trigger on: 'stuck', 'can't focus', 'overwhelmed', 'can't start', 'procrastinating', 'brain fog', 'scattered', 'decision fatigue', 'crashing', 'hyperfocusing wrong thing', 'spiraling', 'paralyzed', 'executive dysfunction', 'everything urgent', 'wasted the day', 'ga bisa fokus', 'gabisa mulai', 'kewalahan', 'buntu', 'adhd mode', 'founder brain', 'reset protocol', 'unstick me', 'Monday triage', 'weekly review', 'ship check', 'males', 'capek mikir', 'otakku penuh', 'gabisa milih', 'deadline mepet', 'ntar dulu', 'bentar lagi', 'satu lagi', 'ide baru nih'. Also trigger when user sounds stuck/scattered, starts a new project, or at session start. Never enable rabbit holes. Always push toward shipping."
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash
 ---
 
 # ADHD Founder Operating System v4

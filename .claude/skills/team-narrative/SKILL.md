@@ -7,6 +7,12 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion, TodoWrite
 ---
 When this skill is invoked, orchestrate the narrative team through a structured pipeline.
 
+1. **World/lore phase** — Spawn narrative-director to establish story context
+2. **User approval** — Present narrative options, get user decision
+3. **Writing phase** — Spawn writer for dialogue and lore entries
+4. **Review phase** — Validate narrative consistency
+5. **Deliver** — Report completion and integration points
+
 **Decision Points:** At each phase transition, use `AskUserQuestion` to present
 the user with the subagent's proposals as selectable options. Write the agent's
 full analysis in conversation, then capture the decision with concise labels.

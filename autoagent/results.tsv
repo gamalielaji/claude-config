@@ -1,0 +1,4 @@
+2026-04-05T08:38	iter1-skill-frontmatter	1150	1184	KEEP	Added user-invocable + allowed-tools to 17 skills
+2026-04-05T08:50	iter2-context-research	1184	1268	KEEP	Added context research steps to 42 agents (30 near-miss + 12 missing)
+2026-04-05T08:54	iter3-trim-descriptions	1268	1315	KEEP	Trimmed all 48 agent descriptions to under 200 chars
+2026-04-05T08:58	iter4-agent-output-format-skill-steps	1315	1334	KEEP	Added output format to 7 engine sub-specialists, numbered steps to 6 skills, fixed AI filler

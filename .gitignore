@@ -17,6 +17,10 @@
 !.claude/settings.json
 !.claude/statusline.sh
 
+# Allow AutoAgent self-improvement framework
+!autoagent/
+!autoagent/**
+
 # Still exclude sensitive claude files
 .claude/memory/
 .claude/projects/

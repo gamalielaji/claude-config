@@ -1,6 +1,6 @@
 ---
 name: art-director
-description: "The Art Director owns the visual identity of the game: style guides, art bible, asset standards, color palettes, UI/UX visual design, and the art production pipeline. Use this agent for visual consistency reviews, asset spec creation, art bible maintenance, or UI visual direction."
+description: "Owns visual identity: style guides, art bible, asset standards, color palettes, and UI visual design. Use for visual consistency, asset specs, or art direction."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
 model: sonnet
 maxTurns: 20
@@ -117,3 +117,6 @@ Delegates to:
 Reports to: `creative-director` for vision alignment
 Coordinates with: `technical-artist` for feasibility, `ui-programmer` for
 implementation constraints
+
+
+Before giving visual direction, research the current art assets and style references in the project.

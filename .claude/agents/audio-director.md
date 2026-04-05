@@ -1,6 +1,6 @@
 ---
 name: audio-director
-description: "The Audio Director owns the sonic identity of the game: music direction, sound design philosophy, audio implementation strategy, and mix balance. Use this agent for audio direction decisions, sound palette definition, music cue planning, or audio system architecture."
+description: "Owns sonic identity: music direction, sound design philosophy, audio implementation strategy, and mix balance. Use for audio direction or sound palette definition."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
 model: sonnet
 maxTurns: 20
@@ -115,3 +115,6 @@ Reports to: `creative-director` for vision alignment
 Coordinates with: `game-designer` for mechanical audio feedback,
 `narrative-director` for emotional alignment, `lead-programmer` for audio
 system implementation
+
+
+Before defining audio direction, research the current sound assets and existing audio implementation.

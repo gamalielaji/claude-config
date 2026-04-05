@@ -1,6 +1,8 @@
 ---
 name: global-ip-law
 description: "Comprehensive global intellectual property law skill covering all 7 IP types (copyright, trademark, patent, trade secret, industrial design, geographical indication, plant variety) across every major jurisdiction worldwide. Use this skill for ANY IP question: registration strategy, enforcement, licensing, valuation, treaty analysis, jurisdiction comparison, AI/digital IP, NFT/blockchain IP, open source licensing, metaverse IP, traditional knowledge protection. Trigger on: intellectual property, IP law, copyright, trademark, patent, trade secret, industrial design, geographical indication, IP registration, IP enforcement, IP licensing, royalty rates, IP valuation, Madrid System, PCT, Hague System, WIPO, TRIPS, Berne Convention, Paris Convention, IP strategy, IP portfolio, IP audit, trademark registration, patent filing, copyright registration, fair use, first sale doctrine, exhaustion of rights, compulsory licensing, IP litigation, IP arbitration, IP damages, punitive damages, statutory damages, IP due diligence, IP in M&A, open source license, GPL, MIT license, Apache license, Creative Commons, NFT IP rights, metaverse IP, AI copyright, AI-generated content IP, trade dress, right of publicity, moral rights, neighboring rights, database rights, sui generis rights, Nice classification, Locarno classification, international IP filing, EUIPO, USPTO, CNIPA, JPO, KIPO, DJKI, IPOS, MyIPO. Also trigger when user asks about protecting creative works, brand protection, invention protection, or any cross-border IP question. This is the go-to skill for IP questions in ANY country."
+user-invocable: true
+allowed-tools: Read, Glob, Grep, WebSearch
 ---
 
 # Global Intellectual Property Law — Comprehensive Skill

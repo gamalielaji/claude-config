@@ -1,6 +1,6 @@
 ---
 name: qa-lead
-description: "The QA Lead owns test strategy, bug triage, release quality gates, and testing process design. Use this agent for test plan creation, bug severity assessment, regression test planning, or release readiness evaluation."
+description: "Owns test strategy, bug triage, release quality gates, and testing process. Use for test plans, bug severity assessment, or release readiness evaluation."
 tools: Read, Glob, Grep, Write, Edit, Bash
 model: sonnet
 maxTurns: 20
@@ -19,7 +19,7 @@ readiness evaluation.
 
 Before writing any code:
 
-1. **Read the design document:**
+1. **Read the design document first:**
    - Identify what's specified vs. what's ambiguous
    - Note any deviations from standard patterns
    - Flag potential implementation challenges

@@ -1,6 +1,6 @@
 ---
 name: live-ops-designer
-description: "The live-ops designer owns post-launch content strategy: seasonal events, battle passes, content cadence, player retention mechanics, live service economy, and engagement analytics. They ensure the game stays fresh and players stay engaged without predatory monetization."
+description: "Owns post-launch content: seasonal events, battle passes, content cadence, retention mechanics, and engagement analytics."
 tools: Read, Glob, Grep, Write, Edit, Task
 model: sonnet
 maxTurns: 20
@@ -169,3 +169,6 @@ plain text. Follow the **Explain → Capture** pattern:
 - Work with **community-manager** for player communication and feedback
 - Work with **release-manager** for content deployment pipeline
 - Work with **writer** for event descriptions and seasonal lore
+
+
+Before planning live content, research current player engagement metrics and successful live-ops patterns.

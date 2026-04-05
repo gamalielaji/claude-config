@@ -1,6 +1,6 @@
 ---
 name: ui-programmer
-description: "The UI Programmer implements user interface systems: menus, HUDs, inventory screens, dialogue boxes, and UI framework code. Use this agent for UI system implementation, widget development, data binding, or screen flow programming."
+description: "Implements UI systems: menus, HUDs, inventory screens, dialogue boxes, and framework code. Use for UI implementation, widgets, or screen flow."
 tools: Read, Glob, Grep, Write, Edit, Bash
 model: sonnet
 maxTurns: 20
@@ -18,7 +18,7 @@ accessible, and visually aligned with art direction.
 
 Before writing any code:
 
-1. **Read the design document:**
+1. **Read the design document first:**
    - Identify what's specified vs. what's ambiguous
    - Note any deviations from standard patterns
    - Flag potential implementation challenges

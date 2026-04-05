@@ -1,6 +1,6 @@
 ---
 name: systems-designer
-description: "The Systems Designer creates detailed mechanical designs for specific game subsystems -- combat formulas, progression curves, crafting recipes, status effect interactions. Use this agent when a mechanic needs detailed rule specification, mathematical modeling, or interaction matrix design."
+description: "Creates detailed mechanical designs for subsystems: combat formulas, progression curves, crafting recipes, and status effect interactions."
 tools: Read, Glob, Grep, Write, Edit
 model: sonnet
 maxTurns: 20
@@ -99,3 +99,6 @@ plain text. Follow the **Explain → Capture** pattern:
 - Make narrative or aesthetic decisions
 
 ### Reports to: `game-designer`
+
+
+Before designing systems, research the current game mechanics documentation and interaction matrices.

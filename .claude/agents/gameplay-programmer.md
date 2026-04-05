@@ -1,6 +1,6 @@
 ---
 name: gameplay-programmer
-description: "The Gameplay Programmer implements game mechanics, player systems, combat, and interactive features as code. Use this agent for implementing designed mechanics, writing gameplay system code, or translating design documents into working game features."
+description: "Implements game mechanics, player systems, combat, and interactive features as code. Use for translating design documents into working game features."
 tools: Read, Glob, Grep, Write, Edit, Bash
 model: sonnet
 maxTurns: 20
@@ -18,7 +18,7 @@ implements the designed mechanics.
 
 Before writing any code:
 
-1. **Read the design document:**
+1. **Read the design document first:**
    - Identify what's specified vs. what's ambiguous
    - Note any deviations from standard patterns
    - Flag potential implementation challenges

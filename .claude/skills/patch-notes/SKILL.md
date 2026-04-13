@@ -118,3 +118,10 @@ Includes everything from Detailed, plus:
 
 8. **Output to the user**: the complete patch notes, the file path, a count of
    changes by category, and any internal changes that were excluded (for review).
+
+### Edge Cases & Error Handling
+- **No previous release tag found**: Use the first commit as the baseline and note: "No previous release tag — patch notes cover all changes since initial commit."
+- **No changelog.md exists**: Generate notes purely from git log + sprint docs. State which sources were used.
+- **Empty git log between tags**: Check if tags are correct. If truly no changes, output: "No code changes between [prev] and [version]. Check tag placement."
+- **Purely internal refactors with zero player-facing changes**: Output a brief "Maintenance update — no player-facing changes" and list what was excluded.
+- **Mixed version styles (semver vs dates)**: Normalize to the project's existing convention. Ask if ambiguous.

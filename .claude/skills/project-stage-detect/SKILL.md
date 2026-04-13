@@ -190,3 +190,16 @@ This skill follows the collaborative design principle:
 5. **Get Approval**: "May I write to production/project-stage-report.md?"
 
 **Never** silently write files. **Always** show findings and ask before creating artifacts.
+
+---
+
+## Error Handling
+
+- **Empty project** (no `src/`, no `design/`, no `production/`): Report: "This appears to be a brand new project with no artifacts. Stage: **Pre-Concept**. Recommended: Run `/brainstorm` to start, or `/start` for guided onboarding." Do NOT generate a full report for empty projects.
+- **Non-game project detected** (no game-related directories, but has standard code): Report: "This doesn't appear to be a game project. This skill is designed for game development projects using the studio framework."
+- **Missing expected directories**: Do NOT treat missing directories as errors -- simply score them as 0% completeness and note them as gaps.
+
+## When NOT to Use This Skill
+- Do NOT use for continuous monitoring -- this is a point-in-time snapshot. Use `/milestone-review` for ongoing tracking.
+- Do NOT use to validate release readiness -- use `/gate-check` for formal phase transitions.
+- Do NOT use on non-game projects -- the stage heuristics assume game development artifacts.

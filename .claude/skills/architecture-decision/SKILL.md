@@ -98,3 +98,14 @@ to implement it.]
 ```
 
 5. **Save the ADR** to `docs/architecture/adr-[NNNN]-[slug].md`.
+
+### Edge Cases & Error Handling
+- **No `docs/architecture/` directory**: Create it. Start numbering at ADR-0001.
+- **User provides only a title with no context**: Ask up to 3 clarifying questions: (1) What problem are we solving? (2) What constraints exist? (3) What alternatives were considered? Do not generate a speculative ADR without at least the problem statement.
+- **Decision is trivial** (e.g., "use tabs vs spaces"): Suggest it doesn't warrant an ADR. ADRs are for decisions that affect system architecture, are costly to reverse, or have multi-team impact.
+- **Superseding an existing ADR**: Link to the old ADR, set its status to "Superseded by ADR-XXXX", and reference it in the new ADR's Related Decisions section.
+
+### DO NOT Use For
+- Configuration choices that don't affect architecture (linter rules, IDE settings)
+- Bug fixes or implementation details
+- Decisions already documented elsewhere (e.g., in a sprint plan or design doc)

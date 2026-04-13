@@ -11,6 +11,22 @@ Expert guidance for operation-aware node configuration with property dependencie
 
 ---
 
+## Quick Reference: Common Node Required Fields
+
+| Node | Required Fields | Notes |
+|------|----------------|-------|
+| **HTTP Request** | ,  | POST/PUT/PATCH also need  +  |
+| **Slack** (post message) | , , ,  | channel needs # prefix |
+| **Webhook** | ,  | Data arrives under .body |
+| **IF** |  with ,  | Binary ops need ; unary ops auto-get  |
+| **Set** |  | At least one field assignment |
+| **Code** |  or  | Must return [{json: {...}}] |
+| **Google Sheets** | , , ,  | Varies by operation |
+
+Use  for any node not listed here.
+
+---
+
 ## Configuration Philosophy
 
 **Progressive disclosure**: Start minimal, add complexity as needed

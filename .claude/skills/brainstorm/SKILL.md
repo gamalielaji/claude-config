@@ -6,6 +6,15 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, WebSearch, AskUserQuestion
 ---
 
+**DO NOT use this skill when:**
+- The user already has a complete game concept and wants to write system GDDs (use `/design-system`)
+- The user wants to review an existing design doc (use `/design-review`)
+- The user just wants to add a feature to an existing concept (edit `game-concept.md` directly)
+
+**Error handling:**
+- If the template at `.claude/docs/templates/game-concept.md` is missing, generate the concept doc using the section structure from Phase 2-6 output and warn the user.
+- If `design/gdd/game-concept.md` already exists and is complete, ask: "A game concept already exists. Revise it, start fresh, or review it with `/design-review`?"
+
 When this skill is invoked:
 
 1. **Parse the argument** for an optional genre/theme hint (e.g., `roguelike`,

@@ -88,6 +88,13 @@ When this skill is invoked:
    the recommendation. Link to the full report at
    `prototypes/[concept-name]/REPORT.md`.
 
+### When NOT to use this skill
+- For production features -- even "quick" ones. If it ships to players, use normal development workflow.
+- For bug fixes or hotfixes -- use bug-report or hotfix instead
+- For refactoring existing systems -- prototype creates new isolated code, it does not modify production
+- For validated concepts that already have a PROCEED recommendation -- move to production implementation
+- When the concept can be validated with a design doc or spreadsheet alone (no code needed)
+
 ### Important Constraints
 
 - Prototype code must NEVER import from production source files

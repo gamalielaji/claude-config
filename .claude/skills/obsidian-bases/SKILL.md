@@ -7,7 +7,21 @@ allowed-tools: Read, Glob, Grep, Write, Edit
 
 # Obsidian Bases Skill
 
+## When NOT to Use
+
+- For creating/editing regular `.md` notes, use the **obsidian-markdown** skill instead
+- For reading, searching, or managing notes via command line, use the **obsidian-cli** skill instead
+- For visual canvases and flowcharts (`.canvas` files), use the **json-canvas** skill instead
+- Do NOT create `.base` files for simple note lists -- Bases are for structured, database-like views with filters, formulas, or multiple views
+
 ## Workflow
+n## When NOT to Use
+
+- For creating/editing regular `.md` notes, use the **obsidian-markdown** skill instead
+- For reading, searching, or managing notes via command line, use the **obsidian-cli** skill instead
+- For visual canvases and flowcharts (`.canvas` files), use the **json-canvas** skill instead
+- Do NOT create `.base` files for simple note lists -- Bases are for structured, database-like views with filters, formulas, or multiple views
+
 
 1. **Create the file**: Create a `.base` file in the vault with valid YAML content
 2. **Define scope**: Add `filters` to select which notes appear (by tag, folder, property, or date)

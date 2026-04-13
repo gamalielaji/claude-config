@@ -260,3 +260,12 @@ This skill follows the collaborative design principle:
 8. **Flag Follow-Up**: Suggest related work, don't auto-execute
 
 **Never assume intent. Always ask before documenting "why".**
+
+---
+
+## When NOT to Use This Skill
+
+- **Writing new design docs from scratch** -- use `/design-system` instead.
+- **Documenting a planned feature that hasn't been built** -- use `/design-system` or manual GDD authoring.
+- **The path contains no code or prototypes** -- report "No implementation found at [path]" and stop.
+- **Architecture decisions that need to be made** (not documented) -- use `/architecture-decision` instead.

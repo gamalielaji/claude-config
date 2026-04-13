@@ -5,6 +5,15 @@ argument-hint: "[combat feature description]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
 ---
+## When to Use
+- Designing and implementing a new combat mechanic end-to-end (e.g., `/team-combat parry system`, `/team-combat ranged combat overhaul`)
+- Adding a combat feature that requires cross-discipline coordination (design + code + VFX + audio + QA)
+
+## When NOT to Use
+- Tweaking numbers in an existing system (use `balance-check` or edit data files directly)
+- Pure VFX or audio polish on existing combat (use `team-polish`)
+- Bug fixes in combat code (use `code-review` or fix directly)
+
 When this skill is invoked, orchestrate the combat team through a structured pipeline:
 
 1. **Design phase** — Spawn game-designer to design the mechanic

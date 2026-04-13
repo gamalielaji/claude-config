@@ -6,6 +6,15 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
 ---
 
+## When to Use
+- Designing a new level or area from scratch (e.g., `/team-level tutorial`, `/team-level forest dungeon`)
+- Major redesign of an existing area requiring narrative, layout, systems, and art coordination
+
+## When NOT to Use
+- Adjusting encounter balance in an existing level (use `balance-check`)
+- Writing narrative content without level design (use `team-narrative`)
+- Pure art direction without level layout changes (use `art-director` directly)
+
 When this skill is invoked:
 
 **Decision Points:** At each step transition, use `AskUserQuestion` to present

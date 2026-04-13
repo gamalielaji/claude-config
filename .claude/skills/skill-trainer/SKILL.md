@@ -212,41 +212,21 @@ Run the full evaluation rubric and present results:
 
 ## ADVANCED: TRANSFER LEARNING
 
-When building a skill similar to an existing one:
-
-1. Read the existing skill's SKILL.md
-2. Identify reusable components (behavioral rules, patterns, output formats)
-3. Fork — don't copy. Adapt each component to the new domain.
-4. Credit the source: `# Inspired by: [source_skill]`
-
----
+When building a skill similar to an existing one: read existing SKILL.md, identify reusable components, fork (don't copy), adapt to new domain, credit source with `# Inspired by: [source_skill]`.
 
 ## ADVANCED: FINE-TUNING EXISTING SKILLS
 
-When user says "improve" or "upgrade" a skill:
+When user says "improve" or "upgrade": read current SKILL.md, run evaluation rubric, identify 1-2 lowest dimensions, research those specifically, make minimal edits, re-evaluate. Score must improve or revert.
 
-1. Read the current SKILL.md
-2. Run the evaluation rubric on current version
-3. Identify the 1-2 lowest-scoring dimensions
-4. Research specifically for those dimensions
-5. Make minimal targeted edits
-6. Re-evaluate. Score must improve or changes are reverted.
+## ANTI-PATTERNS — Detect and Eliminate
 
-**Karpathy rule: If you can't measure the improvement, you didn't improve anything.**
-
----
-
-## ANTI-PATTERNS — The Gradient Killers
-
-These kill skill quality. Detect and eliminate:
-
-1. **Prompt stuffing** — Adding instructions "just in case"
-2. **Vague directives** — "Be helpful" / "Write good output" (HOW?)
+1. **Prompt stuffing** — instructions "just in case"
+2. **Vague directives** — "Be helpful" (HOW?)
 3. **Contradictory rules** — Rule 3 says X, Rule 7 implies not-X
-4. **Missing loss function** — No way to measure if output is good
-5. **No examples** — Expecting the skill to infer output format
-6. **Over-abstraction** — Generic skill trying to do everything
-7. **Under-testing** — Shipped without running on a single example
+4. **Missing loss function** — no way to measure quality
+5. **No examples** — expecting inferred output format
+6. **Over-abstraction** — generic skill doing everything
+7. **Under-testing** — shipped without a single example run
 
 ---
 

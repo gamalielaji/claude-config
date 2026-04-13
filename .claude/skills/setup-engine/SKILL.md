@@ -3,7 +3,7 @@ name: setup-engine
 description: "Configure the project's game engine and version. Pins the engine in CLAUDE.md, detects knowledge gaps, and populates engine reference docs via WebSearch when the version is beyond the LLM's training data."
 argument-hint: "[engine version] or no args for guided selection"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, WebSearch, WebFetch, Task
+allowed-tools: Read, Glob, Grep, Write, Edit, WebSearch, WebFetch
 ---
 
 When this skill is invoked:
@@ -307,3 +307,13 @@ Next Steps:
 - If reference docs already exist for a different engine, ask before replacing
 - Always show the user what you're about to change before making CLAUDE.md edits
 - If WebSearch returns ambiguous results, show the user and let them decide
+
+## When NOT to Use This Skill
+- Do NOT use to switch engine mid-production without discussing migration impact first.
+- Do NOT use for engine plugin/addon installation -- this only configures the engine baseline.
+- Do NOT use if the user just wants to update reference docs -- use `/setup-engine refresh` subcommand instead of full setup.
+
+## Error Handling
+- **CLAUDE.md not found**: Report "No CLAUDE.md found. Run project initialization first or create CLAUDE.md manually." and stop.
+- **WebSearch fails or returns no results**: Inform the user: "Could not verify the latest [engine] version online. Please provide the exact version you want to use."
+- **Engine not recognized**: If the argument is not godot/unity/unreal, ask: "I don't have a preset for [engine]. I can still pin it in CLAUDE.md with manual configuration. Provide engine name, version, language, and build system."

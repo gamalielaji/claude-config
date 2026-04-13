@@ -5,6 +5,15 @@ argument-hint: "[feature or area to polish]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
 ---
+## When to Use
+- A feature or area is functionally complete and needs optimization, polish, and hardening before release (e.g., `/team-polish combat system`, `/team-polish hub town`)
+- Performance profiling reveals issues that need cross-discipline fixes (code + VFX + audio)
+
+## When NOT to Use
+- Feature is still in active development (finish implementation first, then polish)
+- Pure performance profiling without polish intent (use `perf-profile`)
+- Initial QA pass on a new feature (use `qa-tester` directly)
+
 When this skill is invoked, orchestrate the polish team through a structured pipeline.
 
 1. **Audit phase** — Identify polish targets across visual, audio, and UX

@@ -14,6 +14,11 @@ phase. It checks for required artifacts, quality standards, and blockers.
 **Distinct from `/project-stage-detect`**: That skill is diagnostic ("where are we?").
 This skill is prescriptive ("are we ready to advance?" with a formal verdict).
 
+## When NOT to Use
+- Do not use to simply detect the current stage (use `/project-stage-detect`)
+- Do not use for release validation (use `/release-checklist` or `/launch-checklist`)
+- Do not run mid-phase as a progress check (use `/sprint-plan status` or `/milestone-review`)
+
 ## Production Stages (7)
 
 The project progresses through these stages:

@@ -1,0 +1,173 @@
+{
+  "model": "claude-opus-4-5",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[[ \"$PWD\" == *sophia-tg-workspace* ]] && exit 0; _R=\"$HOME/.claude/plugins/marketplaces/thedotmack/plugin\"; node \"$_R/scripts/smart-install.js\"",
+            "timeout": 300
+          },
+          {
+            "type": "command",
+            "command": "[[ \"$PWD\" == *sophia-tg-workspace* ]] && exit 0; _R=\"$HOME/.claude/plugins/marketplaces/thedotmack/plugin\"; node \"$_R/scripts/bun-runner.js\" \"$_R/scripts/worker-service.cjs\" start",
+            "timeout": 60
+          },
+          {
+            "type": "command",
+            "command": "[[ \"$PWD\" == *sophia-tg-workspace* ]] && exit 0; _R=\"$HOME/.claude/plugins/marketplaces/thedotmack/plugin\"; node \"$_R/scripts/bun-runner.js\" \"$_R/scripts/worker-service.cjs\" hook claude-code context",
+            "timeout": 60
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[[ \"$PWD\" == *sophia-tg-workspace* ]] && exit 0; node \"C:/Users/AJI PRATOMO/.claude/hooks/gsd-check-update.js\""
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[[ \"$PWD\" == *sophia-tg-workspace* ]] && exit 0; _R=\"$HOME/.claude/plugins/marketplaces/thedotmack/plugin\"; node \"$_R/scripts/bun-runner.js\" \"$_R/scripts/worker-service.cjs\" hook claude-code session-init",
+            "timeout": 60
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[[ \"$PWD\" == *sophia-tg-workspace* ]] && exit 0; _R=\"$HOME/.claude/plugins/marketplaces/thedotmack/plugin\"; node \"$_R/scripts/bun-runner.js\" \"$_R/scripts/worker-service.cjs\" hook claude-code observation",
+            "timeout": 120
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[[ \"$PWD\" == *sophia-tg-workspace* ]] && exit 0; node \"C:/Users/AJI PRATOMO/.claude/hooks/gsd-context-monitor.js\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[[ \"$PWD\" == *sophia-tg-workspace* ]] && exit 0; _R=\"$HOME/.claude/plugins/marketplaces/thedotmack/plugin\"; node \"$_R/scripts/bun-runner.js\" \"$_R/scripts/worker-service.cjs\" hook claude-code summarize",
+            "timeout": 120
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[[ \"$PWD\" == *sophia-tg-workspace* ]] && exit 0; _R=\"$HOME/.claude/plugins/marketplaces/thedotmack/plugin\"; node \"$_R/scripts/bun-runner.js\" \"$_R/scripts/worker-service.cjs\" hook claude-code session-complete",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[[ \"$PWD\" == *sophia-tg-workspace* ]] && exit 0; node \"C:/Users/AJI PRATOMO/.claude/hooks/gsd-context-monitor.js\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node \"C:/Users/AJI PRATOMO/.claude/hooks/gsd-statusline.js\""
+  },
+  "enabledPlugins": {
+    "telegram@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
+    },
+    "thedotmack": {
+      "source": {
+        "source": "github",
+        "repo": "thedotmack/claude-mem"
+      }
+    }
+  },
+  "agentTeams": true,
+  "mcpServers": {
+    "n8n-mcp": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\AJI PRATOMO\\Desktop\\Claude Infia\\3-Resources\\Code\\tools\\n8n-mcp\\dist\\mcp\\index.js"
+      ],
+      "env": {
+        "MCP_MODE": "stdio",
+        "LOG_LEVEL": "error",
+        "DISABLE_CONSOLE_OUTPUT": "true"
+      }
+    },
+    "pasal-id": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anthropic-ai/mcp-proxy",
+        "https://pasal-mcp-server-production.up.railway.app/mcp"
+      ]
+    },
+    "infia-kg": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\AJI PRATOMO\\Desktop\\Claude Infia\\tools\\infia-kg-mcp\\server.mjs"
+      ],
+      "env": {
+        "VAULT_PATH": "C:\\Users\\AJI PRATOMO\\Desktop\\Claude Infia\\Infia Network State\\knowledge-vault"
+      }
+    },
+    "graphiti": {
+      "command": "uvx",
+      "args": [
+        "graphiti-mcp-server"
+      ],
+      "env": {
+        "NEO4J_URI": "bolt://localhost:7687",
+        "NEO4J_USER": "neo4j",
+        "NEO4J_PASSWORD": "infia2026",
+        "OPENAI_API_KEY": "",
+        "MODEL_NAME": "claude-sonnet-4-6",
+        "ANTHROPIC_API_KEY": ""
+      },
+      "disabled": true
+    }
+  },
+  "skipAutoPermissionPrompt": true,
+  "permissions": {
+    "defaultMode": "auto"
+  }
+}

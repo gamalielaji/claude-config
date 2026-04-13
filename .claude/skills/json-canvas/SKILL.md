@@ -236,6 +236,15 @@ After creating or editing a canvas file, verify:
 
 If validation fails, check for duplicate IDs, dangling edge references, or malformed JSON strings (especially unescaped newlines in text content).
 
+### Common Errors and Fixes
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| Canvas shows blank | Invalid JSON (trailing commas, unescaped quotes) | Parse with a JSON validator; fix syntax errors |
+| Nodes overlap | Identical or close x/y coordinates | Space nodes 50-100px apart |
+| Edge not visible | fromNode/toNode references nonexistent ID | Verify all edge references exist in nodes array |
+| Node off-screen | Very large positive/negative coordinates | Start nodes near (0, 0) and expand outward |
+
 ## Complete Examples
 
 See [references/EXAMPLES.md](references/EXAMPLES.md) for full canvas examples including mind maps, project boards, research canvases, and flowcharts.

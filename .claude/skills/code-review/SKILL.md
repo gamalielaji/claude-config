@@ -6,6 +6,16 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash
 ---
 
+### When NOT to use this skill
+- For generated/auto-created files (protobuf output, build artifacts, lock files)
+- For prototype code in `prototypes/` directories (intentionally relaxed standards)
+- For third-party or vendored code the team does not own
+- For config-only files (JSON, YAML) with no logic — use asset-audit instead
+
+### Example invocations
+- `/code-review src/combat/DamageSystem.cs` — review a single file
+- `/code-review src/networking/` — review all files in a directory
+
 When this skill is invoked:
 
 1. **Read the target file(s)** in full.

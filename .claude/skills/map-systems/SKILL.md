@@ -6,6 +6,11 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, TodoWrite
 ---
 
+**DO NOT use this skill when:**
+- No game concept exists at `design/gdd/game-concept.md` (use `/brainstorm` first)
+- The user wants to write a single system GDD (use `/design-system` directly if the systems index already exists)
+- The user wants to review a design doc (use `/design-review`)
+
 When this skill is invoked:
 
 ## 1. Parse Arguments

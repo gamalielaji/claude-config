@@ -5,6 +5,15 @@ argument-hint: "[narrative content description]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion, TodoWrite
 ---
+## When to Use
+- Creating new story content requiring multiple narrative disciplines (e.g., `/team-narrative act 2 storyline`, `/team-narrative faction questline`)
+- Building world lore that integrates with level design and gameplay
+
+## When NOT to Use
+- Writing a single dialogue scene or lore entry (use `writer` agent directly)
+- Level design without significant narrative requirements (use `team-level`)
+- Editing existing dialogue for localization or polish (use `localize` or edit directly)
+
 When this skill is invoked, orchestrate the narrative team through a structured pipeline.
 
 1. **World/lore phase** — Spawn narrative-director to establish story context

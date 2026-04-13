@@ -22,3 +22,20 @@ Use Defuddle CLI to extract clean readable content from web pages. Prefer over W
 | `--json` | JSON with both HTML and markdown |
 | (none) | HTML |
 | `-p <name>` | Specific metadata property |
+
+## When to Use vs Alternatives
+
+| Scenario | Use |
+|----------|-----|
+| Standard article, blog, docs page | **Defuddle** (cleaner output, fewer tokens) |
+| SPA / JavaScript-rendered content | **WebFetch** (Defuddle may return empty body) |
+| Auth-gated or login-required page | **WebFetch** or browser tools |
+| Page behind Cloudflare/bot protection | **WebFetch** (Defuddle gets blocked) |
+| Defuddle returns empty or garbled output | Fall back to **WebFetch** |
+
+## Error Handling
+
+- **Not installed**: If `defuddle` command not found, run `npm install -g defuddle` first
+- **Empty output**: Page is likely a SPA. Fall back to `WebFetch`
+- **Timeout/connection error**: Check URL validity. Retry once, then fall back to `WebFetch`
+- **Garbled/partial output**: Page may have anti-bot protection. Fall back to `WebFetch`

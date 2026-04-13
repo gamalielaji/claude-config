@@ -164,9 +164,8 @@ These are battle-tested provisions directly relevant to INFIA's active legal iss
 4. **Check amendments**: Indonesian law heavily uses omnibus amendments (esp. UU Cipta Kerja)
 5. **Multiple searches**: Do 2-3 searches with different keyword angles for comprehensive coverage
 6. **Verify status**: Always check if `status === 'berlaku'` — many older laws have been `dicabut` (revoked)
-7. **Low-score trap**: Scores < 0.05 usually return irrelevant PERDA/budget docs — discard these
-8. **Direct pasal lookup > search**: When you know the exact UU, use `/laws/{frbr_uri}` and filter articles client-side rather than relying on search
-9. **Nominee/niche topics**: API search may not surface these well — go directly to the known regulation (e.g., UU 25/2007 Pasal 33 for nominee prohibition) rather than keyword-searching
+7. **Direct pasal lookup > search**: When you know the exact UU, use `/laws/{frbr_uri}` and filter articles client-side rather than relying on search
+8. **Nominee/niche topics**: API search may not surface these well — go directly to the known regulation (e.g., UU 25/2007 Pasal 33 for nominee prohibition) rather than keyword-searching
 
 ## Output Format
 
@@ -193,12 +192,12 @@ When presenting legal research results:
 
 ## Edge Cases & Gotchas
 
-1. **Search scores vary** — low scores (<0.1) often return irrelevant PERDA/budget docs
-2. **`matching_pasals` often empty** — use `get_law_detail` + filter articles instead
-3. **Some laws not content_verified** — `content_verified: false` means OCR may have errors
-4. **Omnibus laws** (UU Cipta Kerja) amend dozens of other laws — check relationships
-5. **FRBR URI for non-UU types**: PP uses `/akn/id/act/pp/YEAR/NUM`, PERPRES uses `/akn/id/act/perpres/YEAR/NUM`
-6. **Rate limit 429** — space requests, max 60/min
+1. **`matching_pasals` often empty** — use `get_law_detail` + filter articles instead
+2. **Some laws not content_verified** — `content_verified: false` means OCR may have errors
+3. **Omnibus laws** (UU Cipta Kerja) amend dozens of other laws — check relationships
+4. **FRBR URI for non-UU types**: PP uses `/akn/id/act/pp/YEAR/NUM`, PERPRES uses `/akn/id/act/perpres/YEAR/NUM`
+5. **Rate limit 429** — space requests, max 60/min
+6. **API down or timeout** — fall back to general knowledge but clearly state: "Pasal.id API unavailable — citing from general knowledge, verify at peraturan.go.id"
 
 ## MCP Tools (when pasal-id MCP is connected)
 

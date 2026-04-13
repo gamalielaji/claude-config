@@ -11,7 +11,16 @@ Expert guidance for writing Python code in n8n Code nodes.
 
 ---
 
-## ⚠️ Important: JavaScript First
+## DO NOT Use This Skill When
+
+- You need HTTP requests from code --> Use **JavaScript** with  or **HTTP Request** node
+- You need pandas, numpy, requests, or ANY external library --> **Not possible in n8n Python**; switch to JavaScript or use dedicated nodes
+- Simple field mapping --> Use **Set** node
+- Writing n8n expressions in node fields --> Use **n8n-expression-syntax** skill
+
+---
+
+## JavaScript First (Important
 
 **Recommendation**: Use **JavaScript for 95% of use cases**. Only use Python when:
 - You need specific Python standard library functions

@@ -92,12 +92,12 @@ Validation is typically iterative:
 6. Repeat until valid (usually 2-3 iterations)
 ```
 
-### Example
+### Example: Slack Post Message
 ```javascript
-// Iteration 1
+// Iteration 1 - Start with resource + operation
 let config = {
-  resource: "channel",
-  operation: "create"
+  resource: "message",
+  operation: "post"
 };
 
 const result1 = validate_node({
@@ -105,12 +105,12 @@ const result1 = validate_node({
   config,
   profile: "runtime"
 });
-// → Error: Missing "name"
+// → Error: Missing "channel"
 
 // ⏱️  23 seconds thinking...
 
-// Iteration 2
-config.name = "general";
+// Iteration 2 - Add channel
+config.channel = "#general";
 
 const result2 = validate_node({
   nodeType: "nodes-base.slack",
@@ -121,8 +121,8 @@ const result2 = validate_node({
 
 // ⏱️  58 seconds fixing...
 
-// Iteration 3
-config.text = "Hello!";
+// Iteration 3 - Add text
+config.text = "Hello from n8n!";
 
 const result3 = validate_node({
   nodeType: "nodes-base.slack",

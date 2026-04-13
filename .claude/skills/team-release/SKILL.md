@@ -5,6 +5,16 @@ argument-hint: "[version number or 'next']"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
 ---
+## When to Use
+- Executing a release from candidate to deployment (e.g., `/team-release v0.3.0`, `/team-release next`)
+- Running the full go/no-go release process with quality gates
+
+## When NOT to Use
+- Generating a changelog only (use `changelog`)
+- Running a release checklist without the full team pipeline (use `release-checklist`)
+- Hotfixes that bypass the normal release process (use `hotfix`)
+- Pre-release polish work (use `team-polish` first, then `team-release`)
+
 When this skill is invoked, orchestrate the release team through a structured pipeline.
 
 1. **Readiness check** — Audit build status, blockers, and quality gates

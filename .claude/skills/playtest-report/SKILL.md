@@ -72,6 +72,26 @@ When invoked with `new`, generate this template:
 3. [Third priority]
 ```
 
-When invoked with `analyze`, read the raw notes, cross-reference with existing
-design documents, and fill in the template above with structured findings.
-Flag any playtest observations that conflict with design intent.
+When invoked with `analyze <path>`:
+
+1. **Read the notes file** at the given path. If the file does not exist, report the error and stop.
+2. **Read design context** -- scan `design/gdd/` for relevant design docs to cross-reference against.
+3. **Extract structured findings** from the raw notes and fill in the template above.
+4. **Flag conflicts** -- highlight any playtest observations that conflict with design intent documented in GDD files.
+5. **Handle sparse notes** -- if the notes are too brief to fill most sections, fill what you can, mark remaining sections as `[INSUFFICIENT DATA]`, and list specific follow-up questions to ask the tester.
+6. **Show the draft report** to the user and ask for approval before writing.
+7. **Save** to `production/playtest-reports/playtest-[date].md` (create directory if needed).
+
+### When NOT to use this skill
+- Do NOT use for bug tracking -- use `/bug-report` instead.
+- Do NOT use for balance analysis -- use `/balance-check` instead.
+- Do NOT analyze notes that are just a list of bugs with no gameplay observations.
+
+### Example
+```bash
+# Generate a blank template
+/playtest-report new
+
+# Analyze existing notes into structured format
+/playtest-report analyze notes/playtest-2026-03-15.md
+```

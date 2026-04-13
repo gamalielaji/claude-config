@@ -11,6 +11,19 @@ Expert guide for writing correct n8n expressions in workflows.
 
 ---
 
+## When to Use This Skill vs Others
+
+| Situation | Use |
+|-----------|-----|
+| Setting a field value in a node parameter | **This skill** (expressions) |
+| Writing logic in a Code node | **n8n-code-javascript** (use JS directly) |
+| Configuring node operation/resource | **n8n-node-configuration** |
+| Building workflow structure | **n8n-workflow-patterns** |
+
+**Quick rule**: If typing into a node parameter field and need dynamic data, use expressions. If inside a Code node, use direct JavaScript -- never expressions.
+
+---
+
 ## Expression Format
 
 All dynamic content in n8n uses **double curly braces**:

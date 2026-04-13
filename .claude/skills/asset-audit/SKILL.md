@@ -6,10 +6,18 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep
 ---
 
+**DO NOT use this skill when:**
+- No assets exist yet (the project is still in design/pre-production)
+- The user wants to review game design documents (use `/design-review`)
+- The user wants to check game balance (use `/balance-check`)
+
 When this skill is invoked:
 
 1. **Read the art bible or asset standards** from the relevant design docs and
    the CLAUDE.md naming conventions.
+   - If no art bible or asset standards document exists, warn:
+     > "No art bible or asset standards found. Auditing against default conventions only."
+   - If CLAUDE.md has no naming convention section, use the defaults defined in step 3.
 
 2. **Scan the target asset directory** using Glob:
    - `assets/art/**/*` for art assets

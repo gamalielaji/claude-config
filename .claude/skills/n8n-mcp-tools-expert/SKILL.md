@@ -11,6 +11,17 @@ Master guide for using n8n-mcp MCP server tools to build workflows.
 
 ---
 
+## DO NOT Use This Skill When
+
+- Writing JavaScript/Python code inside Code nodes --> Use **n8n-code-javascript** or **n8n-code-python**
+- Writing  expressions in node fields --> Use **n8n-expression-syntax**
+- Interpreting validation error messages --> Use **n8n-validation-expert**
+- Choosing a workflow architecture pattern --> Use **n8n-workflow-patterns**
+
+This skill is for **using the n8n-mcp MCP tools themselves** (search_nodes, get_node, validate_node, n8n_create_workflow, etc.).
+
+---
+
 ## Tool Categories
 
 n8n-mcp provides tools organized into categories:

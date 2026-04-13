@@ -71,3 +71,10 @@ When this skill is invoked:
 - Not all additions are bad — some are discovered requirements. But they must be acknowledged and accounted for.
 - When recommending cuts, prioritize preserving the core player experience over nice-to-haves
 - Always quantify scope changes — "it feels bigger" is not actionable, "+35% items" is
+
+### Edge Cases & Error Handling
+- **No plan document found**: Ask user for the plan location. If none exists, state: "No baseline plan found — cannot measure scope creep without an original plan. Create one first."
+- **No git history / empty repo**: Use only the plan document and any TODO/FIXME comments in code. Note: "Git history unavailable — scope check based on plan document and codebase scan only."
+- **Plan is vague / has no itemized scope**: Extract implicit scope items from the plan's description, flag them as "inferred", and ask user to confirm before scoring.
+- **Multiple overlapping plans**: Ask user which plan is the baseline. Do not merge plans without explicit confirmation.
+- **Feature spans multiple sprints**: Track cumulative scope across all related sprints, not just the current one.

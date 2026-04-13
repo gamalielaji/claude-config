@@ -11,6 +11,16 @@ Expert guidance for writing JavaScript code in n8n Code nodes.
 
 ---
 
+## DO NOT Use This Skill When
+
+- Simple field mapping only needed --> Use **Set** node instead
+- Basic true/false filtering --> Use **Filter** node instead
+- Single conditional check --> Use **IF** or **Switch** node instead
+- Only making an HTTP request with no custom logic --> Use **HTTP Request** node instead
+- Writing n8n expressions in node fields ({{ }} syntax) --> Use **n8n-expression-syntax** skill instead
+
+---
+
 ## Quick Start
 
 ```javascript

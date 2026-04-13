@@ -11,13 +11,21 @@ allowed-tools: Read, Glob, Grep, WebSearch
 
 This skill provides a complete knowledge base for intellectual property law worldwide. It covers all 7 IP types, all major international treaties, jurisdiction-specific laws for 30+ countries, enforcement mechanisms, valuation methods, licensing models, and emerging IP frontiers (AI, NFT, metaverse, open source).
 
-## How to Use This Skill
+## Research Protocol (Follow This Workflow)
 
 1. **Identify the IP type** — which of the 7 categories applies?
 2. **Identify the jurisdiction(s)** — where does protection need to apply?
 3. **Identify the action** — register, enforce, license, value, or strategize?
-4. **Check the reference files** for jurisdiction-specific details
-5. **Always cite** the specific law/treaty/article when advising
+4. **Web search** for latest developments in this IP type + jurisdiction (laws change frequently)
+5. **Check the reference files** below for jurisdiction-specific details
+6. **For Indonesian law**: use the `indonesian-law` skill (Pasal.id API) for article-level citations — do NOT rely solely on this skill general knowledge
+7. **Always cite** the specific law/treaty/article when advising
+8. **Flag uncertainty**: If the legal position is unsettled (especially AI/blockchain IP), say so explicitly — never present emerging law as settled
+
+### DO NOT Use For
+- Indonesian law deep dives (use `indonesian-law` skill instead for pasal-level citations)
+- IP learning/education (use `ip-learning-agent` for progressive curriculum)
+- General business strategy that happens to mention IP tangentially
 
 For deep dives, read the relevant reference file:
 

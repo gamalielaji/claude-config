@@ -244,12 +244,11 @@ For team-specific templates → read `references/team-handoff-templates.md`
 
 ## REFERENCES
 
-Read for extended protocols:
-- `references/state-protocols.md` — Extended 7-state playbooks (5-step versions)
-- `references/prompt-library.md` — Copy-paste prompts per state + phase
-- `references/anti-patterns.md` — Detection patterns + intervention scripts
-- `references/team-handoff-templates.md` — Team-specific brief templates
-- `references/revenue-protocol.md` — Revenue gate system + R1-R4 deep dive
-- `references/circadian-protocol.md` — Sleep/chronotherapy protocol
-- `references/exercise-protocol.md` — Exercise prescription
-- `references/medication-landscape.md` — Medication options
+Read for extended protocols (check if file exists before reading — skip gracefully if missing):
+- `references/state-protocols.md` — Extended 7-state playbooks
+- `references/prompt-library.md` — Prompts per state + phase
+- `references/anti-patterns.md` — Detection patterns + interventions
+- `references/team-handoff-templates.md` — Team-specific briefs
+- `references/revenue-protocol.md` — Revenue gate system + R1-R4
+
+**DO NOT** use this skill for: pure technical debugging, code review, factual lookups, or tasks with no revenue connection. If the user is in "builder mode" on a well-scoped task, stay out of the way — only intervene if anti-patterns appear.

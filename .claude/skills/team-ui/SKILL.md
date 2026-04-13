@@ -5,6 +5,15 @@ argument-hint: "[UI feature description]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
 ---
+## When to Use
+- Designing and implementing a new UI feature end-to-end (e.g., `/team-ui inventory screen`, `/team-ui settings menu`)
+- Major UI redesign requiring UX, visual design, and programming coordination
+
+## When NOT to Use
+- Small UI bug fixes or tweaks (edit code directly)
+- Adding a single button or label to an existing screen (use `ui-programmer` directly)
+- Pure visual reskin without UX changes (use `art-director` directly)
+
 When this skill is invoked, orchestrate the UI team through a structured pipeline.
 
 **Decision Points:** At each phase transition, use `AskUserQuestion` to present

@@ -6,6 +6,15 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
 ---
 
+## When to Use
+- Designing audio for a new feature, area, or system (e.g., `/team-audio combat`, `/team-audio forest biome`)
+- Overhauling or extending an existing audio pipeline for a specific game area
+
+## When NOT to Use
+- Quick one-off sound effect requests (use `sound-designer` agent directly)
+- Music-only tasks with no gameplay integration (use `audio-director` directly)
+- Bug fixes in existing audio code (use `gameplay-programmer` directly)
+
 When this skill is invoked, orchestrate the audio team through a structured pipeline.
 
 **Decision Points:** At each step transition, use `AskUserQuestion` to present

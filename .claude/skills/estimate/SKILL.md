@@ -6,10 +6,17 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep
 ---
 
+**DO NOT use this skill when:**
+- The task is trivial and obvious (less than 2 hours of work) -- just do it
+- The user wants a project-level timeline (use `/sprint-plan` or `/milestone-review`)
+- The task description is a question, not an actionable work item
+
 When this skill is invoked:
 
 1. **Read the task description** from the argument. If the description is too
    vague to estimate meaningfully, ask for clarification before proceeding.
+   Examples of too vague: "make it better", "fix stuff", "add features".
+   Ask: "What specifically needs to change? Which system, file, or behavior?"
 
 2. **Read CLAUDE.md** for project context: tech stack, coding standards,
    architectural patterns, and any estimation guidelines.

@@ -106,3 +106,11 @@ obsidian dev:mobile on
 ```
 
 Run `obsidian help` to see additional developer commands including CDP and debugger controls.
+
+## Error Handling
+
+- **Obsidian not running**: All commands require a running Obsidian instance. If a command returns a connection error or times out, tell the user to open Obsidian and try again.
+- **Vault not found**: If `vault=<name>` fails, run `obsidian vault:list` to show available vaults.
+- **File not found**: If `file=<name>` fails, try `obsidian search query="<name>"` to locate the file.
+- **Plugin not loaded**: If `plugin:reload` fails, verify the plugin ID with `obsidian plugin:list`.
+- **General failures**: Run `obsidian dev:errors` and `obsidian dev:console level=error` to surface errors.

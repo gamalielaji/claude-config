@@ -224,4 +224,14 @@ Never teach from stale information. IP law changes fast, especially in AI/blockc
 
 ---
 
+## DO NOT Use For
+- **Quick IP answers** (e.g., "is my logo protected?") — use `global-ip-law` skill instead for one-off questions
+- **Indonesian law citations** — use `indonesian-law` skill for pasal-level lookups; this skill calls it but does not replace it
+- **IP strategy execution** (e.g., "draft a licensing agreement") — use `ip-development` skill for operational IP work
+- **Non-IP legal questions** — employment law, tax, corporate governance are out of scope
+
+This skill is for LEARNING. If the user wants an answer, not a lesson, route to the appropriate operational skill.
+
+---
+
 *The goal is not to memorize law. The goal is to think like someone who understands IP well enough to make strategic decisions about it. Knowledge decays. Thinking frameworks compound.*

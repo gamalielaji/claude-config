@@ -152,12 +152,32 @@ mustahil di Uniswap jadi marginal-positif di sini.
 |---|---|---|---|
 | Loesch dkk. 2021 (Topaz Blue/Bancor), arXiv:2111.09192 | 17 pool Uniswap v3 >$10M TVL, Mei–Sep 2021 | **49.5%** dari ~17.000 address rugi vs HODL. $199M fee vs $260M IL = net −$60M. IL > fee di **80%** pool. MKR/WETH: 74% rugi | `[B]` |
 | Heimbach, Schertenleib, Wattenhofer, AFT'22, arXiv:2205.08904 | Uniswap v3 | Konsisten ~50% return negatif. **Tidak ada bukti statistik** LP yang sering rebalance mengungguli yang pasif | `[A]` |
-| Fritsch & Canidio 2024, arXiv:2404.05803 | Pool AMM terbesar | Kerugian arbitrase **melebihi** fee di banyak pool terbesar. **v2 lebih profitable untuk LP pasif daripada v3** | `[B]` |
+| Fritsch & Canidio 2024, arXiv:2404.05803 | Pool AMM terbesar (Ethereum mainnet) | Kerugian arbitrase **melebihi** fee di banyak pool terbesar | `[B]` |
+| Fritsch & Canidio 2024, klaim terpisah | sample yang sama | **v2 lebih profitable untuk LP pasif daripada v3** — lihat catatan scope di bawah tabel | `[B]`, keyakinan sedang |
 | "Liquidity provision in CLMMs", arXiv:2604.22069 (Apr 2026) | WETH/USD di Base: Uniswap, Aerodrome, PancakeSwap, SushiSwap | **Hanya ~1 dari 6 LP (≈17%) yang terhindar dari kerugian** | `[B]` |
 | Cartea, Drissi, Monga, SIAM J. Fin. Math. 15:931–959 | Data Uniswap v3 | LP rata-rata trading **dengan kerugian signifikan** | `[A]` |
 
 **Baseline yang jujur: 17–50% LP profitable, tergantung segmen. Yang paling baru dan paling
 granular (transaction-level, 2026) memberi angka paling pahit: ~17%.** `[B]`
+
+**Catatan scope atas tiga temuan Fritsch & Canidio.** Paper itu di dokumen ini awalnya saya
+kutip sebagai satu baris berisi tiga temuan berbeda — praktik buruk, karena ketiganya punya
+kekuatan yang tidak sama. Dipisah dengan benar:
+
+- *Kerugian arbitrase melebihi fee di banyak pool terbesar* — ini yang paling kuat, dan
+  konsisten dengan Loesch dkk. serta Cartea dkk. secara independen.
+- *v2 lebih profitable daripada v3 untuk LP pasif* — **selalu bawa scope-nya**: ini temuan
+  pada sample pool besar Ethereum mainnet dalam periode studi mereka, **bukan** pernyataan
+  umum bahwa concentrated liquidity inferior. Jangan generalisasi ke DLMM Solana.
+- *Block time 12 detik → 100ms mengurangi kerugian arbitrase 20–70%* — dibahas di §1.2(b).
+
+**Verifikasi atas angka ~17% (arXiv:2604.22069).** Keberadaan dan desain paper-nya saya
+konfirmasi ulang secara independen: penulis Urusov, Berezovskiy, Krestenko, Kornilov, submit
+23 April 2026, pool WETH/USD di Base lintas Uniswap/Aerodrome/PancakeSwap/SushiSwap, dengan
+taksonomi 15 tipe posisi. Semua cocok. Yang **tidak** bisa saya konfirmasi ulang dari sumber
+kedua adalah angka "satu dari enam" itu sendiri — ia berasal dari satu sintesis hasil
+pencarian, bukan dari full text. Perlakukan desain studinya sebagai terverifikasi dan
+angkanya sebagai bersumber-tunggal.
 
 Tidak ada studi setara untuk pool memecoin Meteora DLMM. Saya cari eksplisit; tidak ada.
 Yang ada cuma tool profit-analysis per-wallet (GeekLad `meteora-profit-analysis`) `[G]`.
@@ -515,16 +535,37 @@ uang kecil, bukan sebagai temuan.
 
 | Metrik | Angka | Sumber | Tag |
 |---|---|---|---|
-| Arbitrase sebagai % rata-rata volume DEX Solana (2025) | **~50%** | Riset industri Solana MEV | `[C]` |
-| Volume AMM pasif yang merupakan searcher flow vs quote basi (pool SOL-stablecoin, akhir 2025) | **Mayoritas** | Riset independen dikutip dalam laporan MEV | `[C]` |
+| Arbitrase sebagai % volume DEX Solana (2025) | **~50% — angka ini rapuh, baca peringatan di bawah** | Riset industri Solana MEV | `[C]`, keyakinan rendah |
+| Volume AMM pasif yang merupakan searcher flow vs quote basi (pool SOL-stablecoin, akhir 2025) | **Mayoritas** | Riset independen dikutip dalam laporan MEV | `[C]`, keyakinan rendah |
 | Sandwich attack di Solana, 2025 | 1.55 juta serangan, ~$13.43M diekstraksi | sandwiched.me / Helius | `[C]` |
 | Ekstraksi sandwich kumulatif, 16 bulan | $370–500M | Laporan MEV Solana | `[C]` |
 | Stake yang menjalankan Jito-Solana | ~80%+ (373.8M SOL, ~92% awal 2025) | Data Jito | `[C]` |
 | Tip validator: bot arb vs bot sandwich | 50–60% profit vs 15–20% profit | Riset MEV | `[C]` |
 
-**Angka jangkar: ~50% volume DEX Solana adalah arbitrase.** `[C]` Itu flow yang menurut
-definisi menang melawan LP. Kalau lo lihat pool dengan volume/TVL 20×, asumsikan ~10× dari
-itu toxic sampai terbukti sebaliknya.
+> **PERINGATAN atas angka ~50% — jangan pakai sebagai angka jangkar.**
+> Angka ini melewati review adversarial dan tidak lolos. Tiga masalah, dan semuanya material:
+>
+> 1. **Denominatornya tidak pernah dinyatakan.** Sebagian besar analisis MEV Solana mengukur
+>    share lewat *transaction count* atau rasio transaksi reverted/successful, bukan *dollar
+>    volume*. Dua metrik ini bisa berbeda satu orde besaran, dan hanya dollar volume yang
+>    relevan untuk menghitung fee yang mengalir ke lo.
+> 2. **Kategorisasi sumbernya menggelembungkan angka.** Dashboard DEX Volume Blockworks
+>    Research mengelompokkan trade menjadi "MEV Bot" atau **"Other (unidentified programs,
+>    most likely an MEV bot)"** `[C]`. Memasukkan yang tak teridentifikasi ke ember "kemungkinan
+>    MEV" secara mekanis menaikkan share yang dilaporkan.
+> 3. **Arbitrase atomik multi-hop dihitung berkali-kali.** Satu route arbitrase melewati
+>    beberapa pool, dan agregator menghitung tiap leg sebagai volume. Tanpa deduplikasi,
+>    share arbitrase naik secara artifisial.
+>
+> Pencarian ulang yang ditargetkan tidak menemukan angka share-terhadap-volume 2025 dengan
+> metodologi yang dinyatakan. **Perlakukan "arbitrase adalah porsi besar dan struktural dari
+> volume DEX Solana" sebagai yang terdukung; angka spesifik 50% tidak.**
+
+Arah kualitatifnya tetap berdiri dan itu yang penting untuk keputusan lo: AMM pasif secara
+struktural mengekspos quote basi ke searcher, dan itu konsisten dengan teori LVR `[B]`.
+Tapi jangan turunkan aturan sizing dari "50%" — kalau lo lihat pool dengan volume/TVL 20×,
+yang benar adalah **mengukur toxicity-nya langsung** lewat markout (§5.4) dan jump share
+(§5.3), bukan mengalikan dengan konstanta yang denominatornya tidak diketahui.
 
 Catatan penting untuk memecoin: trader memecoin sangat rentan disandwich karena mereka
 menyetel slippage tolerance tinggi `[C]`. Itu berarti sebagian "volume retail" yang lo
@@ -847,6 +888,23 @@ Supaya tidak ada yang salah dianggap terbukti:
 | Bentuk aljabar persis lebar range optimal Cartea dkk. | **Tidak bisa saya akses** (arxiv terblokir). §3.1 turunan saya sendiri |
 | Formula `2γ/δ` untuk rasio fee/LVR | **Terbantah oleh tes saya sendiri** (§2.5). Jangan pakai |
 | Konstanta `k ≈ 65` di `σ_max ≈ kγ` | **Spesifik model.** Bentuknya transferable, konstantanya tidak |
+| Angka "arbitrase ~50% volume DEX Solana" | **Diturunkan ke keyakinan rendah** (§5.1). Denominator tak dinyatakan, kategorisasi sumber menggelembungkan, multi-hop dihitung ganda |
+| Angka "~1 dari 6 LP profitable" | Desain studi terverifikasi, **angkanya bersumber tunggal** dari sintesis pencarian (§1.4) |
+
+### Catatan provenance: review adversarial
+
+Dokumen ini pernah dilewatkan satu putaran review adversarial (10 klaim load-bearing, tiga
+verifier dengan lensa berbeda, ambang 2-dari-3 untuk membunuh klaim). **Putaran itu gagal
+secara teknis** — 60 dari 63 tool call subagent mati di permission layer
+(`permission handler returned updatedInput ... required parameter is missing`), jadi tidak
+ada verifier yang pernah membuka satu sumber pun. Verdict-nya karena itu tidak dipakai
+sebagai bukti, dan tidak ada klaim yang diubah hanya karena "dibunuh" oleh voting.
+
+Yang **dipakai** dari putaran itu hanya kritik yang berdiri di atas penalaran murni dan bisa
+saya nilai sendiri: masalah denominator pada angka 50% (terbukti benar setelah saya cek ulang
+sendiri — lihat §5.1) dan penggabungan tiga temuan Fritsch & Canidio di bawah satu sitasi
+(terbukti benar, sudah dipisah di §1.4). Satu objeksi verifier saya tolak setelah verifikasi:
+klaim bahwa "Base tidak punya pool WETH/USD" — abstrak paper-nya sendiri memakai frasa itu.
 
 Yang **paling** didukung, dan yang saya pertaruhkan:
 1. Rate LVR `σ²/8` untuk CPMM dan ekstensi `E·σ²/8`-nya — closed form, tervalidasi terhadap

@@ -1,0 +1,272 @@
+==============================================================================
+PART A — sanity checks against published closed forms
+==============================================================================
+  Uniswap-v2 / full range, E                       = 1.0000  (expect 1.0)
+  breakeven daily volume/TVL, sigma_d=5%, fee=30bp = 0.1042  (a16z reports ~0.104)
+  LVR/day at sigma_d=5% (v2)                       = 3.125 bps  (a16z reports 3.125 bps)
+
+  range +/- 1.0% around spot -> E =    200.5   (approx 2/h =    200.0)
+  range +/- 2.0% around spot -> E =    100.5   (approx 2/h =    100.0)
+  range +/- 5.0% around spot -> E =     40.5   (approx 2/h =     40.0)
+  range +/-10.0% around spot -> E =     20.4   (approx 2/h =     20.0)
+  range +/-25.0% around spot -> E =      8.3   (approx 2/h =      8.0)
+
+==============================================================================
+PART B — break-even fee rate, in range, per DAY
+   required fee income (% of position/day) = E * sigma_daily^2 / 8
+==============================================================================
+   sigma_d \ halfwidth h           5%        10%        20%        35%        50%
+       15%                     11.39%      5.77%      2.96%      1.75%      1.27%
+       30%                     45.56%     23.07%     11.82%      7.01%      5.09%
+       50%                    126.57%     64.08%     32.84%     19.47%     14.13%
+       80%                    324.02%    164.03%     84.07%     49.83%     36.17%
+      120%                    729.04%    369.07%    189.15%    112.12%     81.37%
+
+   Read: a token at 50%/day realised vol, in a +/-20% (log) range, must pay
+   ~6% of position value per day in fees just to break even against LVR.
+
+==============================================================================
+PART C — Meteora fee schedule from SDK source, and bin-crossing break-even
+==============================================================================
+  bin_step= 100 bps  base_factor= 10000  ->  base fee  1.000%
+  bin_step= 100 bps  base_factor= 20000  ->  base fee  2.000%
+  bin_step= 250 bps  base_factor=  8000  ->  base fee  2.000%
+  bin_step= 400 bps  base_factor=  5000  ->  base fee  2.000%
+
+  variable fee at vol_accumulator=5000, bin_step=100, vfc=40000: 0.010%
+  total fee is hard-capped at 10% (MAX_FEE_RATE=1e8/FEE_PRECISION=1e9)
+
+  Crossings needed to break even on one bin, by ending drawdown below it:
+     drawdown |  fee=1%   fee=2%   fee=5%
+          5%  |      5.0     2.5     1.0
+         10%  |     10.0     5.0     2.0
+         20%  |     20.0    10.0     4.0
+         50%  |     50.0    25.0    10.0
+
+==============================================================================
+PART D — liquidity shape: where does bid-side capital actually sit?
+==============================================================================
+  config: 60 bins x 100bps below spot -> range floor = 0.5504 (-45.0%)
+
+  share of capital in the LOWEST decile of the range, and avg fill price:
+    spot    deepest 10% of range:  10.0% | nearest 10%:  10.0% | avg fill 0.7274 (-27.3%)
+    curve   deepest 10% of range:   0.0% | nearest 10%:  31.0% | avg fill 0.8799 (-12.0%)
+    bidask  deepest 10% of range:  76.0% | nearest 10%:   0.0% | avg fill 0.5717 (-42.8%)
+
+  -> Bid-Ask is NOT a linear ramp. It is 1/gaussian_pdf, so weight grows
+     super-exponentially toward the range floor. Verified against
+     generateBinLiquidityAllocation(..., invert=true) in weight.ts.
+
+==============================================================================
+PART E — Monte-Carlo, bid-side ladder, PnL vs holding SOL
+==============================================================================
+  ASSUMPTIONS (all editable, none fitted to proprietary data):
+    60 bins x 100bps below spot, fee 2%, max hold 240 min, zero drift
+    ordinary jumps: 6.0/day, mu=-1%, sd=6%
+    catastrophic:   0.25/day of 60% down
+    gas/slippage:   0.08% of notional round trip
+
+--- E1. shape comparison, sigma_daily = 60% ---
+  shape=spot                 n=20000
+    win rate         77.9%   mean  +0.711%   median  +2.387%
+    fees           +5.343%   inventory PnL  -4.552%
+    stdev          10.276%   skew    -3.81
+    p05 -15.781%  p25  +0.122%  p75  +5.465%  p95  +8.653%
+    worst  -86.71%   CVaR(5%)  -38.36%
+    avg hold    240 min   avg bin crossings  160.3
+    exits: time_stop 100%
+    Kelly f*:  52.7% naive |  42.2% w/ 0.1% ruin |  12.5% w/ 0.5% ruin  -> quarter-Kelly of last: 3.1%
+
+  shape=curve                n=20000
+    win rate         74.1%   mean  +3.142%   median  +5.029%
+    fees          +11.139%   inventory PnL  -7.917%
+    stdev          15.303%   skew    -1.89
+    p05 -28.990%  p25  -0.080%  p75 +12.892%  p95 +20.871%
+    worst  -88.52%   CVaR(5%)  -45.88%
+    avg hold    240 min   avg bin crossings  160.3
+    exits: time_stop 100%
+    Kelly f*:  91.0% naive |  81.1% w/ 0.1% ruin |  62.2% w/ 0.5% ruin  -> quarter-Kelly of last: 15.6%
+
+  shape=bidask               n=20000
+    win rate         18.6%   mean  -1.058%   median  -0.057%
+    fees           +0.501%   inventory PnL  -1.479%
+    stdev           7.025%   skew    -5.61
+    p05  -0.103%  p25  -0.075%  p75  -0.023%  p95  +0.661%
+    worst  -83.69%   CVaR(5%)  -25.19%
+    avg hold    240 min   avg bin crossings  160.3
+    exits: time_stop 100%
+    Kelly f*:   0.0% naive |   0.0% w/ 0.1% ruin |   0.0% w/ 0.5% ruin  -> quarter-Kelly of last: 0.0%
+
+--- E2. volatility regime, shape=spot ---
+  sigma_daily=30%            n=20000
+    win rate         80.3%   mean  -0.149%   median  +1.479%
+    fees           +2.635%   inventory PnL  -2.704%
+    stdev           9.323%   skew    -4.64
+    p05  -4.127%  p25  +0.187%  p75  +3.056%  p95  +4.478%
+    worst  -82.80%   CVaR(5%)  -36.88%
+    avg hold    240 min   avg bin crossings   79.0
+    exits: time_stop 100%
+    Kelly f*:   0.0% naive |   0.0% w/ 0.1% ruin |   0.0% w/ 0.5% ruin  -> quarter-Kelly of last: 0.0%
+
+  sigma_daily=60%            n=20000
+    win rate         77.5%   mean  +0.625%   median  +2.412%
+    fees           +5.326%   inventory PnL  -4.622%
+    stdev          10.572%   skew    -3.77
+    p05 -16.807%  p25  +0.120%  p75  +5.525%  p95  +8.720%
+    worst  -87.11%   CVaR(5%)  -39.66%
+    avg hold    240 min   avg bin crossings  159.8
+    exits: time_stop 100%
+    Kelly f*:  45.4% naive |  35.8% w/ 0.1% ruin |   7.4% w/ 0.5% ruin  -> quarter-Kelly of last: 1.8%
+
+  sigma_daily=100%           n=20000
+    win rate         71.2%   mean  -0.371%   median  +2.853%
+    fees           +8.637%   inventory PnL  -8.928%
+    stdev          14.927%   skew    -2.23
+    p05 -35.636%  p25  -0.080%  p75  +8.165%  p95 +13.987%
+    worst  -91.13%   CVaR(5%)  -49.51%
+    avg hold    240 min   avg bin crossings  259.1
+    exits: time_stop 100%
+    Kelly f*:   0.0% naive |   0.0% w/ 0.1% ruin |   0.0% w/ 0.5% ruin  -> quarter-Kelly of last: 0.0%
+
+--- E3. exit rules, shape=spot, sigma_daily=60% ---
+  no stop, 4h time-stop      n=20000
+    win rate         77.6%   mean  +0.721%   median  +2.387%
+    fees           +5.346%   inventory PnL  -4.545%
+    stdev          10.279%   skew    -3.82
+    p05 -15.687%  p25  +0.120%  p75  +5.453%  p95  +8.685%
+    worst  -90.79%   CVaR(5%)  -38.34%
+    avg hold    240 min   avg bin crossings  160.4
+    exits: time_stop 100%
+    Kelly f*:  53.2% naive |  42.7% w/ 0.1% ruin |  13.1% w/ 0.5% ruin  -> quarter-Kelly of last: 3.3%
+
+  stop -8%                   n=20000
+    win rate         76.2%   mean  +0.696%   median  +2.253%
+    fees           +5.090%   inventory PnL  -4.315%
+    stdev           9.482%   skew    -3.53
+    p05  -9.106%  p25  +0.053%  p75  +5.403%  p95  +8.610%
+    worst  -58.94%   CVaR(5%)  -33.20%
+    avg hold    229 min   avg bin crossings  152.7
+    exits: stop_loss 12%  time_stop 88%
+    Kelly f*:  60.9% naive |  47.2% w/ 0.1% ruin |  12.9% w/ 0.5% ruin  -> quarter-Kelly of last: 3.2%
+
+  stop -15%                  n=20000
+    win rate         77.9%   mean  +0.753%   median  +2.416%
+    fees           +5.301%   inventory PnL  -4.467%
+    stdev           9.764%   skew    -3.45
+    p05 -15.692%  p25  +0.120%  p75  +5.453%  p95  +8.653%
+    worst  -60.39%   CVaR(5%)  -35.55%
+    avg hold    234 min   avg bin crossings  159.0
+    exits: stop_loss 6%  time_stop 94%
+    Kelly f*:  61.9% naive |  48.7% w/ 0.1% ruin |  15.8% w/ 0.5% ruin  -> quarter-Kelly of last: 4.0%
+
+  stop -8%, take +4%         n=20000
+    win rate         79.7%   mean  +0.450%   median  +3.077%
+    fees           +3.781%   inventory PnL  -3.251%
+    stdev           8.179%   skew    -4.40
+    p05  -8.783%  p25  +0.253%  p75  +4.009%  p95  +4.306%
+    worst  -57.13%   CVaR(5%)  -28.35%
+    avg hold    190 min   avg bin crossings  113.4
+    exits: stop_loss 10%  take_profit 45%  time_stop 44%
+    Kelly f*:  53.9% naive |  37.5% w/ 0.1% ruin |   0.0% w/ 0.5% ruin  -> quarter-Kelly of last: 0.0%
+
+--- E4. max hold time, shape=spot, sigma_daily=60%, stop -8% ---
+  max hold 60 min            n=20000
+    win rate         72.2%   mean  +0.094%   median  +0.503%
+    fees           +1.257%   inventory PnL  -1.083%
+    stdev           4.423%   skew    -9.03
+    p05  -1.602%  p25  -0.013%  p75  +1.253%  p95  +2.081%
+    worst  -55.26%   CVaR(5%)  -11.19%
+    avg hold     60 min   avg bin crossings   37.7
+    exits: stop_loss 1%  time_stop 99%
+    Kelly f*:  40.3% naive |   0.0% w/ 0.1% ruin |   0.0% w/ 0.5% ruin  -> quarter-Kelly of last: 0.0%
+
+  max hold 240 min           n=20000
+    win rate         75.3%   mean  +0.581%   median  +2.187%
+    fees           +5.049%   inventory PnL  -4.389%
+    stdev           9.477%   skew    -3.43
+    p05  -9.176%  p25  +0.053%  p75  +5.334%  p95  +8.520%
+    worst  -58.02%   CVaR(5%)  -33.59%
+    avg hold    228 min   avg bin crossings  151.5
+    exits: stop_loss 12%  time_stop 88%
+    Kelly f*:  53.0% naive |  40.0% w/ 0.1% ruin |   5.6% w/ 0.5% ruin  -> quarter-Kelly of last: 1.4%
+
+  max hold 720 min           n=20000
+    win rate         62.9%   mean  +1.705%   median  +2.987%
+    fees          +12.939%   inventory PnL -11.153%
+    stdev          16.898%   skew    -1.00
+    p05 -37.754%  p25  -8.354%  p75 +13.653%  p95 +24.876%
+    worst  -58.64%   CVaR(5%)  -44.53%
+    avg hold    597 min   avg bin crossings  388.2
+    exits: stop_loss 32%  time_stop 68%
+    Kelly f*:  53.7% naive |  48.3% w/ 0.1% ruin |  32.1% w/ 0.5% ruin  -> quarter-Kelly of last: 8.0%
+
+  max hold 1440 min          n=20000
+    win rate         49.1%   mean  +2.914%   median  -0.080%
+    fees          +21.231%   inventory PnL -18.238%
+    stdev          23.795%   skew    +0.16
+    p05 -39.299%  p25  -8.828%  p75 +19.232%  p95 +45.731%
+    worst  -58.05%   CVaR(5%)  -44.95%
+    avg hold   1023 min   avg bin crossings  636.9
+    exits: stop_loss 48%  time_stop 52%
+    Kelly f*:  51.9% naive |  48.5% w/ 0.1% ruin |  37.7% w/ 0.5% ruin  -> quarter-Kelly of last: 9.4%
+
+==============================================================================
+PART F — what actually drives the fee/LVR ratio (controlled sweeps)
+   Sweeps below vary ONE input at a time, jumps disabled, to isolate the
+   diffusive regime. Result: the ratio scales with gamma/sigma and is
+   INDEPENDENT of bin step and of hold time. A tempting closed form
+   'ratio = 2*gamma/delta' is refuted by sweep D — see README.md App.A3.
+==============================================================================
+  A) vary fee rate gamma  -> ratio is LINEAR in gamma
+     gamma=  0.5%  fees  1.314%  inv  -2.410%  ratio   0.55  crossings  157.7
+     gamma=  1.0%  fees  2.628%  inv  -2.410%  ratio   1.09  crossings  157.7
+     gamma=  2.0%  fees  5.256%  inv  -2.410%  ratio   2.18  crossings  157.7
+     gamma=  4.0%  fees 10.513%  inv  -2.410%  ratio   4.36  crossings  157.7
+  B) vary sigma_daily     -> ratio falls roughly as 1/sigma
+     sigma=  30%   fees  2.472%  inv  -0.562%  ratio   4.40  crossings   74.2
+     sigma=  60%   fees  5.256%  inv  -2.410%  ratio   2.18  crossings  157.7
+     sigma= 120%   fees 10.132%  inv  -9.434%  ratio   1.07  crossings  304.0
+  C) vary hold time       -> ratio ~invariant (both legs grow with T)
+     T=   60min  fees  1.211%  inv  -0.580%  ratio   2.09  crossings   36.3
+     T=  240min  fees  5.256%  inv  -2.410%  ratio   2.18  crossings  157.7
+     T= 1440min  fees 28.000%  inv -14.229%  ratio   1.97  crossings  840.0
+  D) vary bin step at FIXED range depth -> ratio INVARIANT (refutes 2g/d)
+     step=  25bps nbins= 240 delta=0.00250  ratio   2.18   ('2g/d' would predict  16.02)
+     step=  50bps nbins= 120 delta=0.00499  ratio   2.18   ('2g/d' would predict   8.02)
+     step= 100bps nbins=  60 delta=0.00995  ratio   2.18   ('2g/d' would predict   4.02)
+     step= 200bps nbins=  30 delta=0.01980  ratio   2.18   ('2g/d' would predict   2.02)
+
+  Fitting ratio = k * gamma / sigma_daily on the sweeps above gives k ~ 65.
+  CAUTION: k is NOT universal. It is set by how often the pool re-prices
+  (this model observes the path once per minute). Estimate your own k from
+  realised fills:  k = fees_earned * sigma_daily / (gamma * capital * ratio).
+  The SHAPE (ratio proportional to gamma/sigma) is the transferable part.
+
+  Same configs WITH jumps re-enabled (bin_step=100bps):
+  jumps/day= 0.0 rug/day=0.00  fees  5.173%  inv  -2.602%  ratio   1.99  mean PnL +2.571%
+  jumps/day= 6.0 rug/day=0.00  fees  5.390%  inv  -2.911%  ratio   1.85  mean PnL +2.479%
+  jumps/day= 6.0 rug/day=0.25  fees  5.346%  inv  -4.816%  ratio   1.11  mean PnL +0.529%
+  jumps/day=12.0 rug/day=0.50  fees  5.449%  inv  -6.676%  ratio   0.82  mean PnL -1.227%
+
+  -> The diffusive ratio is the edge. Jump intensity is what eats it.
+     Pool selection = maximising diffusive vol per unit of jump vol.
+
+==============================================================================
+PART G — Bid-Ask on a fair test: does range depth rescue it?
+   E1 punished bid-ask partly because a 45%-deep range leaves most of its
+   capital unused in 4h. Re-run across depths, holding everything else fixed.
+==============================================================================
+   10 bins (floor  -9.5%) | spot  +4.40% (fee 14.72%)  curve  +5.48% (fee 16.99%)  bidask  +2.94% (fee 11.64%)  
+   20 bins (floor -18.0%) | spot  +3.09% (fee 11.71%)  curve  +4.78% (fee 15.51%)  bidask  +1.20% (fee 7.13%)  
+   40 bins (floor -32.8%) | spot  +1.45% (fee 7.65%)  curve  +3.67% (fee 13.01%)  bidask  -0.77% (fee 2.06%)  
+   60 bins (floor -45.0%) | spot  +0.60% (fee 5.36%)  curve  +2.84% (fee 11.05%)  bidask  -1.09% (fee 0.51%)  
+
+  -> Bid-Ask only competes when the range is shallow enough that its
+     bottom-weighted capital is actually reachable within the hold time.
+
+==============================================================================
+Caveat: PARTS E-G are a model, not evidence. Their purpose is to show the SHAPE
+of the PnL distribution (negative skew, fee/inventory split, how stops and
+time-stops move the tail) under stated assumptions. Replace the jump and
+vol parameters with your own fills before sizing anything on it.
+==============================================================================

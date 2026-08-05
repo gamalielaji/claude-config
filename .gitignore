@@ -21,6 +21,10 @@
 !autoagent/
 !autoagent/**
 
+# Allow research write-ups
+!research/
+!research/**
+
 # Still exclude sensitive claude files
 .claude/memory/
 .claude/projects/
@@ -35,3 +39,7 @@
 .claude/scheduled-tasks/
 .claude/synthesis-outputs/
 .claude/*.json.backup
+
+# Never commit Python caches
+__pycache__/
+*.pyc

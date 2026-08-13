@@ -375,8 +375,90 @@ Dan inilah efek jump-nya `[F]`:
 | + 12 jump & 0.5 rug/hari | 5.45% | −6.68% | 0.82 | **−1.23%** |
 
 Perhatikan: **kolom fee nyaris tidak bergerak** (5.17% → 5.45%). Yang berubah hanya sisi
-kerugian. Ini bukti numerik atas tesis §0.4: seluruh edge ada di vol difusif, seluruh
-kehancuran ada di intensitas jump. Screening lo harus mengukur keduanya secara terpisah.
+kerugian.
+
+### 2.6 Koreksi penting: tabel di atas memakai fee FLAT — Meteora tidak begitu
+
+Semua angka di §2.5 dihitung dengan fee tetap 2%. Itu **bukan** cara Meteora bekerja, dan
+perbedaannya material. Dari source (`index.ts` L9289–9324) `[D]`:
+
+```js
+deltaId = |indexReference − activeId|
+volatilityAccumulator = min(volatilityReference + deltaId × 10000, maxVolatilityAccumulator)
+variable_fee = ceil(variableFeeControl × (volatilityAccumulator × binStep)² / 1e11) / 1e9
+```
+
+`v_a` proporsional terhadap `deltaId`, dan variable fee proporsional terhadap **kuadratnya**.
+Jadi **fee tumbuh kuadratik terhadap jarak tempuh harga**, lalu jenuh di cap 10%.
+
+Jadwal fee pada bin step 100bps, base 1%, `variableFeeControl = 40000`: `[E]`
+
+| Jarak dari referensi | 0 bin | 1 | 2 | 5 | 10 | **15** | 35 |
+|---|---|---|---|---|---|---|---|
+| Fee | 1.00% | 1.04% | 1.16% | 2.00% | **5.00%** | **10.00% (cap)** | 10.00% |
+
+**Konsekuensinya: klaim "fee nyaris tidak sensitif terhadap jump" hanya berlaku untuk fee
+flat, dan salah untuk mekanisme Meteora yang sesungguhnya.** Diulang dengan fee dinamis: `[F]`
+
+| Konfigurasi | rate realisasi | fee income | inventory | mean PnL |
+|---|---|---|---|---|
+| Difusi murni | 1.13% | 3.16% | −2.63% | **+0.53%** |
+| + 6 jump/hari | 1.16% | 3.28% | −2.82% | +0.46% |
+| + 0.25 rug/hari | **1.35%** | 3.58% | −4.80% | −1.21% |
+| + 12 jump & 0.5 rug/hari | **1.55%** | 3.96% | −6.71% | −2.75% |
+| + 24 jump & 1.0 rug/hari | **1.91%** | 4.80% | −10.97% | −6.17% |
+
+Fee dinamis **memang** merespons: rate realisasi naik 69% (1.13% → 1.91%) seiring intensitas
+jump. Mekanismenya mengenakan biaya paling mahal persis saat harga bergerak paling jauh.
+
+**Tapi dari mana persisnya manfaat itu datang — level atau bentuk?** Ini layak dipisah, karena
+intuisi "fee dinamis menghedge lo karena menagih saat harga bergerak jauh" adalah klaim tentang
+*bentuk*, dan ternyata salah. Saya uji dengan mematok fee flat tepat pada rata-rata realisasi
+fee dinamis, sehingga levelnya identik dan yang tersisa hanya bentuknya: `[F]`
+
+| σ_daily | fee flat yang dipatok | PnL flat | PnL dinamis | keunggulan bentuk |
+|---|---|---|---|---|
+| 30% | 1.28% | −1.12% | −0.98% | **+0.15pp** |
+| 60% | 1.34% | −1.23% | −1.20% | **+0.03pp** |
+| 120% | 1.73% | −3.35% | −3.22% | **+0.13pp** |
+| 200% | 2.76% | −5.78% | −5.43% | **+0.34pp** |
+
+**Keunggulan bentuknya nyaris nol.** Konsisten positif dan membesar seiring vol — jadi arahnya
+benar dan bukan noise — tapi besarannya 0.03–0.34pp, tidak material untuk keputusan apa pun.
+
+Artinya: **manfaat fee dinamis hampir seluruhnya datang dari menaikkan rata-rata fee saat
+stres, bukan dari mengatur waktu penagihannya.** Konsekuensi praktisnya penting — untuk
+memodelkan pool secara memadai lo cukup memakai fee flat yang dikalibrasi ke rate realisasi
+pada regime yang lo hadapi. Lo tidak perlu mensimulasikan mesin volatility accumulator-nya.
+Yang perlu lo ketahui hanya **berapa rata-rata rate yang akan lo terima**, dan itu tergantung
+`variableFeeControl` pool serta seberapa jauh harga biasanya bergerak.
+
+**Tapi arah kesimpulannya bertahan, dan itu yang menentukan keputusan.** Perhatikan lajunya:
+fee naik 1.5× sementara inventory memburuk 4.2× (−2.63% → −10.97%). Kenaikan fee tidak pernah
+mengejar. PnL tetap menurun monoton dan tetap menembus nol. **Jump tetap membunuh trade ini;
+mekanisme fee hanya memperlambat kematiannya.**
+
+Dua implikasi operasional:
+
+1. **Cap 10% adalah batas perlindungannya.** Pada `vfc=40000`/binstep 100, fee mentok setelah
+   ~16 bin (~17% pergerakan). Untuk crash −60% (~90 bin), fee tetap 10% sementara kerugian
+   berjalan penuh. Perlindungan bekerja untuk pergerakan sedang, **hilang persis di ekor**.
+2. **`variableFeeControl` pool menjadi variabel screening.** Pool dengan `vfc` tinggi
+   mencapai cap lebih cepat (`vfc=100000` → 10 bin; `vfc=10000` → 30 bin) dan karena itu
+   membayar lebih baik saat stres. Ini variabel yang sebelumnya tidak ada di §5.2 dan
+   seharusnya ada.
+
+> **Peringatan parameter.** Formulanya terverifikasi dari source primer `[D]`, tapi **nilai
+> per-pool** (`variableFeeControl`, `filterPeriod`, `decayPeriod`, `reductionFactor`,
+> `maxVolatilityAccumulator`) berada di akun preset on-chain dan **tidak ada di SDK**.
+> Angka di atas memakai nilai asumsi. Baca nilai asli pool sebelum deploy — dan karena
+> jadwal fee kuadratik, salah asumsi di sini menggeser hasil jauh lebih besar daripada
+> salah asumsi di kebanyakan parameter lain.
+
+Netnya untuk screening: tesis §0.4 tetap berdiri — edge ada di vol difusif, kehancuran ada di
+intensitas jump — tapi dengan satu perbaikan penting. Bukan "hindari semua vol tinggi",
+melainkan **hindari vol jump yang melewati cap fee**. Vol difusif tinggi di pool ber-`vfc`
+agresif justru dibayar dengan baik.
 
 ---
 
@@ -587,6 +669,8 @@ Diurutkan dari yang saya paling percaya:
 | 4 | **Distribusi ukuran swap** | Median & p90 ukuran swap | Bimodal dengan ekor besar = arb; unimodal kecil = retail |
 | 5 | **Konsentrasi holder** | Share top-100 | >70% umum untuk memecoin `[B]`; makin tinggi makin rentan dump terkoordinasi |
 | 6 | **Volume/TVL** | Turnover harian | Dipakai di formula §2.3 Bentuk 2 — **tapi tidak bisa berdiri sendiri**, karena turnover tinggi bisa 100% toxic |
+| 7 | **`variableFeeControl` pool** | Baca dari akun preset on-chain | **Metrik baru dari §2.6.** Menentukan seberapa cepat fee dinamis naik saat stres, dan pada jarak berapa ia mentok di cap 10%. `vfc` tinggi = kompensasi lebih baik saat pergerakan sedang. Baca bersama `binStep`, karena yang menentukan adalah `(v_a × binStep)²` |
+| 8 | **Jarak sampai cap fee** | `saturation_delta_bins()` di `dlmm_quant.py` | Turunan dari #7. Bandingkan dengan lebar range lo: kalau range lo jauh lebih dalam daripada jarak cap, sisi bawah range lo tidak terlindungi sama sekali |
 
 Catatan #6 penting: volume/TVL tinggi adalah syarat perlu tapi **jauh dari cukup**. Pool
 dengan turnover 50× yang seluruhnya arbitrase akan menghancurkan lo lebih cepat daripada

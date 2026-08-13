@@ -158,9 +158,12 @@ Kolom "Verifikasi" menyatakan sejauh mana saya benar-benar melihat isinya.
 | `ts-client/src/dlmm/helpers/weight.ts` | `getPriceOfBinByBinId`, `calculateSpotDistribution`, `calculateBidAskDistribution`, `buildGaussianFromBins`, `generateBinLiquidityAllocation` |
 | `ts-client/src/dlmm/constants/index.ts` | `FEE_PRECISION=1e9`, `MAX_FEE_RATE=1e8`, `BASIS_POINT_MAX=10000`, `SCALE_OFFSET=64` |
 
-Program Rust (`lb_clmm`) **tidak ketemu** di path yang dicoba (semua 404), jadi aturan update
-`volatilityAccumulator` (filter period, decay period, reduction factor) **tidak terverifikasi
-dari source** — hanya dari deskripsi dokumentasi lewat search. Ini gap nyata.
+Program Rust (`lb_clmm`) tidak ketemu di path yang dicoba (semua 404). **Gap ini kemudian
+DITUTUP** dari sumber lain: SDK TypeScript ternyata mengimplementasikan aturan yang sama untuk
+simulasi swap client-side, di `ts-client/src/dlmm/index.ts` L9289-9324 (`updateVolatilityAccumulator`,
+`updateReference`). Lihat §5.6. Yang **masih** gap adalah NILAI parameter per-pool
+(`variableFeeControl`, `filterPeriod`, `decayPeriod`, `reductionFactor`,
+`maxVolatilityAccumulator`) — semuanya dibaca dari akun preset on-chain, tidak ada di SDK.
 
 Potongan yang paling menentukan, dari `weight.ts`:
 
@@ -298,6 +301,55 @@ diukur per pool** dan tidak bisa diturunkan dari `σ` — dan karena itu §2.3 B
 
 Bentuk pengganti yang bertahan: `rasio ≈ k·γ/σ_daily` dengan `k ≈ 65` **pada model ini**.
 `k` bukan konstanta universal — ia ditentukan laju re-pricing. Yang transferable bentuknya.
+
+### 5.6 Fee dinamis Meteora — gap ditutup, lalu klaim saya sendiri dikoreksi dua kali
+
+Ditambahkan setelah putaran riset lanjutan. Menarik karena dua koreksi berturut-turut ke arah
+yang berlawanan.
+
+**Gap ditutup.** Program Rust `lb_clmm` tidak bisa diakses (404 di semua path). Tapi SDK
+TypeScript mengimplementasikan aturan yang sama untuk simulasi client-side, `index.ts`
+L9289–9324. Sekarang `[D]` primary source:
+
+```
+v_a = min(volatilityReference + |indexReference − activeId| × 10000, maxVolatilityAccumulator)
+volatilityReference = (elapsed < decayPeriod) ? floor(v_a × reductionFactor / 10000) : 0
+    ...tapi hanya diperbarui kalau elapsed >= filterPeriod
+variable_fee ∝ (v_a × binStep)²,  total di-cap 10%
+```
+
+**Koreksi #1 — klaim saya salah.** §2.5 menyimpulkan "fee income nyaris tidak sensitif
+terhadap intensitas jump" (5.17% → 5.45%). Itu dihitung dengan fee **flat**. Karena `v_a ∝
+deltaId` dan variable fee ∝ `v_a²`, fee sebenarnya **kuadratik terhadap jarak tempuh**.
+Diulang dengan fee dinamis: rate realisasi 1.13% → 1.91% seiring intensitas jump, naik 69%.
+Klaim awal salah untuk mekanisme yang sesungguhnya.
+
+**Koreksi #2 — koreksi pertama saya sendiri terlalu bersemangat.** Setelah menemukan itu, saya
+menulis bahwa mekanismenya adalah "hedge parsial ter-cap" karena menagih paling mahal saat
+harga bergerak paling jauh. Itu klaim tentang **bentuk** jadwal fee, dan saya belum mengujinya.
+
+Tes: patok fee flat tepat pada rata-rata realisasi fee dinamis, sehingga level identik dan
+yang tersisa hanya bentuk.
+
+| σ_daily | flat dipatok | PnL flat | PnL dinamis | keunggulan bentuk |
+|---|---|---|---|---|
+| 30% | 1.28% | −1.12% | −0.98% | +0.15pp |
+| 60% | 1.34% | −1.23% | −1.20% | +0.03pp |
+| 120% | 1.73% | −3.35% | −3.22% | +0.13pp |
+| 200% | 2.76% | −5.78% | −5.43% | +0.34pp |
+
+**Keunggulan bentuknya nyaris nol.** Konsisten positif dan membesar dengan vol — arahnya benar,
+bukan noise — tapi 0.03–0.34pp tidak material.
+
+**Kesimpulan yang bertahan:** manfaat fee dinamis hampir seluruhnya dari **level** (rata-rata
+naik saat stres), bukan dari **bentuk** (waktu penagihan). Konsekuensi praktis: untuk
+memodelkan pool, fee flat yang dikalibrasi ke rate realisasi sudah memadai — mesin volatility
+accumulator tidak perlu disimulasikan. Ini menyederhanakan backtest siapa pun secara signifikan.
+
+**Yang masih gap:** nilai parameter per-pool (`variableFeeControl`, `filterPeriod`,
+`decayPeriod`, `reductionFactor`, `maxVolatilityAccumulator`) ada di akun preset on-chain,
+tidak di SDK. Karena jadwalnya kuadratik, salah asumsi di sini menggeser hasil lebih besar
+daripada di kebanyakan parameter lain. **Baca dari chain sebelum dipakai.**
 
 ---
 

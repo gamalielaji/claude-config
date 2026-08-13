@@ -68,6 +68,83 @@ def total_fee_rate(bin_step_bps, base_factor, variable_fee_control, vol_accumula
     return min(f, 0.10)
 
 
+class DynamicFee:
+    """
+    Meteora's actual dynamic fee, transcribed from SDK source.
+
+    Source: DLMM.updateVolatilityAccumulator and DLMM.updateReference,
+    ts-client/src/dlmm/index.ts (~L9289-9324):
+
+        updateVolatilityAccumulator(v, s, activeId):
+            deltaId = |v.indexReference - activeId|
+            v.volatilityAccumulator = min(v.volatilityReference + deltaId*BASIS_POINT_MAX,
+                                          s.maxVolatilityAccumulator)
+
+        updateReference(activeId, v, s, now):
+            elapsed = now - v.lastUpdateTimestamp
+            if elapsed >= s.filterPeriod:
+                v.indexReference = activeId
+                v.volatilityReference = (elapsed < s.decayPeriod)
+                    ? floor(v.volatilityAccumulator * s.reductionFactor / BASIS_POINT_MAX)
+                    : 0
+
+    Consequence that matters: volatilityAccumulator is proportional to deltaId, and the
+    variable fee is proportional to its SQUARE. So the fee grows QUADRATICALLY with how far
+    price has travelled from its reference — until it saturates at MAX_FEE_RATE (10%).
+
+    NOTE ON PARAMETERS: the formulas above are primary-source verified. The per-pool VALUES
+    (filterPeriod, decayPeriod, reductionFactor, variableFeeControl, maxVolatilityAccumulator)
+    live in on-chain preset accounts and are NOT in the SDK, so the defaults below are
+    plausible assumptions, not measured values. Sweep them; do not trust them.
+    """
+
+    def __init__(self, bin_step, base_factor=10_000, base_fee_power_factor=0,
+                 variable_fee_control=40_000, filter_period=30, decay_period=600,
+                 reduction_factor=5_000, max_volatility_accumulator=350_000):
+        self.bin_step = bin_step
+        self.base_factor = base_factor
+        self.base_fee_power_factor = base_fee_power_factor
+        self.variable_fee_control = variable_fee_control
+        self.filter_period = filter_period
+        self.decay_period = decay_period
+        self.reduction_factor = reduction_factor
+        self.max_va = max_volatility_accumulator
+        self.index_reference = 0
+        self.volatility_reference = 0
+        self.volatility_accumulator = 0
+        self.last_update = 0
+
+    def update_reference(self, active_id, now):
+        elapsed = now - self.last_update
+        if elapsed >= self.filter_period:
+            self.index_reference = active_id
+            if elapsed < self.decay_period:
+                self.volatility_reference = int(
+                    self.volatility_accumulator * self.reduction_factor // BASIS_POINT_MAX)
+            else:
+                self.volatility_reference = 0
+        self.last_update = now
+
+    def update_accumulator(self, active_id):
+        delta = abs(self.index_reference - active_id)
+        self.volatility_accumulator = min(
+            self.volatility_reference + delta * BASIS_POINT_MAX, self.max_va)
+
+    def rate(self):
+        b = base_fee_rate(self.bin_step, self.base_factor, self.base_fee_power_factor)
+        v = variable_fee_rate(self.bin_step, self.variable_fee_control,
+                              self.volatility_accumulator)
+        return min(b + v, 0.10)
+
+    def saturation_delta_bins(self):
+        """How many bins of travel until the fee pins at the 10% cap."""
+        for d in range(1, 5000):
+            self.volatility_accumulator = min(d * BASIS_POINT_MAX, self.max_va)
+            if self.rate() >= 0.10 - 1e-12:
+                return d
+        return None
+
+
 # ---------------------------------------------------------------------------
 # 2. Liquidity shapes (mirrors calculateSpotDistribution / calculateBidAskDistribution)
 # ---------------------------------------------------------------------------
@@ -150,9 +227,11 @@ def breakeven_crossings(drawdown_frac: float, fee_rate: float) -> float:
 # ---------------------------------------------------------------------------
 
 class LadderResult:
-    __slots__ = ("pnl", "fees", "inventory_pnl", "minutes", "exit_reason", "crossings", "end_price")
+    __slots__ = ("pnl", "fees", "inventory_pnl", "minutes", "exit_reason", "crossings",
+                 "end_price", "avg_fee_rate")
 
-    def __init__(self, pnl, fees, inventory_pnl, minutes, exit_reason, crossings, end_price):
+    def __init__(self, pnl, fees, inventory_pnl, minutes, exit_reason, crossings, end_price,
+                 avg_fee_rate=0.0):
         self.pnl = pnl
         self.fees = fees
         self.inventory_pnl = inventory_pnl
@@ -160,12 +239,13 @@ class LadderResult:
         self.exit_reason = exit_reason
         self.crossings = crossings
         self.end_price = end_price
+        self.avg_fee_rate = avg_fee_rate
 
 
 def simulate_ladder(rng, shape, n_bins, bin_step_bps, fee_rate, sigma_daily,
                     max_minutes, jump_lambda_daily, jump_mu, jump_sigma,
                     rug_lambda_daily, rug_size, stop_loss=None, take_profit=None,
-                    gas_cost=0.0, drift_daily=0.0):
+                    gas_cost=0.0, drift_daily=0.0, dyn_fee_params=None):
     """
     One path. Notional = 1.0 SOL of quote. Returns LadderResult (PnL vs holding SOL).
 
@@ -185,6 +265,8 @@ def simulate_ladder(rng, shape, n_bins, bin_step_bps, fee_rate, sigma_daily,
     tot_base = 0.0
     fees = 0.0
     crossings = 0
+    fee_rate_sum = 0.0
+    dyn = DynamicFee(bin_step_bps, **dyn_fee_params) if dyn_fee_params is not None else None
 
     steps_per_day = 1440.0
     sig_step = sigma_daily / math.sqrt(steps_per_day)
@@ -211,18 +293,28 @@ def simulate_ladder(rng, shape, n_bins, bin_step_bps, fee_rate, sigma_daily,
         price = math.exp(log_p)
         new_active = int(math.floor(log_p / log_bin))
 
+        if new_active != active and dyn is not None:
+            # one updateReference per swap, as the program does
+            dyn.update_reference(new_active, t * 60)
+
         if new_active < active:
             # price falling: these bins move above active -> quote converts to base
             for b in range(max(new_active + 1, lo), min(active, hi) + 1):
                 j = b - lo
                 cap = quote[j]
                 if cap > 0.0:
+                    if dyn is not None:
+                        dyn.update_accumulator(b)      # per-bin, as fees accrue per bin
+                        fr = dyn.rate()
+                    else:
+                        fr = fee_rate
                     got = cap / prices[j]
                     base[j] += got
                     quote[j] = 0.0
                     tot_quote -= cap
                     tot_base += got
-                    fees += fee_rate * cap
+                    fees += fr * cap
+                    fee_rate_sum += fr
                     crossings += 1
             active = new_active
         elif new_active > active:
@@ -231,12 +323,18 @@ def simulate_ladder(rng, shape, n_bins, bin_step_bps, fee_rate, sigma_daily,
                 j = b - lo
                 held = base[j]
                 if held > 0.0:
+                    if dyn is not None:
+                        dyn.update_accumulator(b)
+                        fr = dyn.rate()
+                    else:
+                        fr = fee_rate
                     cap = held * prices[j]
                     quote[j] += cap
                     base[j] = 0.0
                     tot_base -= held
                     tot_quote += cap
-                    fees += fee_rate * cap
+                    fees += fr * cap
+                    fee_rate_sum += fr
                     crossings += 1
             active = new_active
 
@@ -252,7 +350,8 @@ def simulate_ladder(rng, shape, n_bins, bin_step_bps, fee_rate, sigma_daily,
     price = math.exp(log_p)
     inv = tot_quote + tot_base * price - 1.0
     pnl = inv + fees - gas_cost
-    return LadderResult(pnl, fees, inv, t, exit_reason, crossings, price)
+    return LadderResult(pnl, fees, inv, t, exit_reason, crossings, price,
+                        fee_rate_sum / crossings if crossings else 0.0)
 
 
 def run_mc(n_paths, seed=7, **kw):
@@ -568,7 +667,68 @@ def main():
     print()
 
     print("=" * 78)
-    print("Caveat: PARTS E-G are a model, not evidence. Their purpose is to show the SHAPE")
+    print("PART H — Meteora's REAL dynamic fee vs a flat fee")
+    print("   Everything above used a flat fee. Meteora's actual fee is base + variable,")
+    print("   where variable ~ (volatility_accumulator * bin_step)^2 and the accumulator is")
+    print("   proportional to how many bins price has travelled from its reference. So the")
+    print("   fee is QUADRATIC in distance travelled, then pinned at the 10% cap.")
+    print("=" * 78)
+    DYN = dict(base_factor=10_000, variable_fee_control=40_000, filter_period=30,
+               decay_period=600, reduction_factor=5_000, max_volatility_accumulator=350_000)
+    probe = DynamicFee(100, **DYN)
+    print(f"  fee schedule at bin_step=100, base 1%, vfc=40000"
+          f"  (caps at {probe.saturation_delta_bins()} bins of travel):")
+    row = "     "
+    for d in (0, 1, 2, 5, 10, 16, 35):
+        probe.volatility_reference = 0
+        probe.index_reference = 0
+        probe.update_accumulator(d)
+        row += f"{d}bin:{probe.rate():.2%}  "
+    print(row)
+    print()
+    print("  PARAMETER CAVEAT: the FORMULAS are primary-source verified, but per-pool VALUES")
+    print("  (vfc, filter/decay period, reduction factor, max accumulator) live in on-chain")
+    print("  preset accounts and are NOT in the SDK. The values used here are assumptions.")
+    print()
+
+    hkw = dict(n_bins=60, bin_step_bps=100, max_minutes=240, jump_mu=-0.01,
+               jump_sigma=0.06, rug_size=0.60, gas_cost=0.0, drift_daily=0.0)
+    NH = 8_000
+
+    print("  H1. Does the dynamic fee RESPOND to stress? (realised avg fee rate)")
+    print(f"     {'jumps/d':>8} {'rug/d':>6} {'realised rate':>14} {'fee income':>11} {'inventory':>11} {'PnL':>9}")
+    for jl, rl in ((0.0, 0.0), (6.0, 0.0), (6.0, 0.25), (12.0, 0.5), (24.0, 1.0)):
+        kw = dict(hkw)
+        kw.update(jump_lambda_daily=jl, rug_lambda_daily=rl)
+        rs = run_mc(NH, seed=61, shape="spot", sigma_daily=0.60, fee_rate=0.0,
+                    dyn_fee_params=DYN, **kw)
+        f, i = mean([r.fees for r in rs]), mean([r.inventory_pnl for r in rs])
+        ar = mean([r.avg_fee_rate for r in rs])
+        print(f"     {jl:>8.1f} {rl:>6.2f} {ar:>13.2%} {f:>11.2%} {i:>+11.2%} {f+i:>+9.2%}")
+    print()
+
+    print("  H2. Fair comparison — flat fee pinned to the dynamic fee's OWN realised average,")
+    print("      so this isolates the SHAPE of the response, not its level.")
+    print(f"     {'sigma_d':>8} {'matched flat':>13} {'flat PnL':>10} {'dyn rate':>10} {'dyn PnL':>10} {'edge':>9}")
+    for s in (0.30, 0.60, 1.20, 2.00):
+        kw = dict(hkw)
+        kw.update(jump_lambda_daily=6.0, rug_lambda_daily=0.25)
+        dyn = run_mc(NH, seed=63, shape="spot", sigma_daily=s, fee_rate=0.0,
+                     dyn_fee_params=DYN, **kw)
+        matched = mean([r.avg_fee_rate for r in dyn])
+        flat = run_mc(NH, seed=63, shape="spot", sigma_daily=s, fee_rate=matched, **kw)
+        dp = mean([r.pnl for r in dyn])
+        fp = mean([r.pnl for r in flat])
+        print(f"     {s:>8.0%} {matched:>12.2%} {fp:>+10.2%} {matched:>9.2%} {dp:>+10.2%} {dp-fp:>+9.2%}")
+    print()
+    print("  Read H2: at equal AVERAGE fee, the dynamic schedule still differs from flat,")
+    print("  because it charges most exactly when price is moving furthest — i.e. it")
+    print("  concentrates fee income into the same states that generate the inventory loss.")
+    print("  That is a partial, capped hedge against the very regime that hurts the LP.")
+    print()
+
+    print("=" * 78)
+    print("Caveat: PARTS E-H are a model, not evidence. Their purpose is to show the SHAPE")
     print("of the PnL distribution (negative skew, fee/inventory split, how stops and")
     print("time-stops move the tail) under stated assumptions. Replace the jump and")
     print("vol parameters with your own fills before sizing anything on it.")
